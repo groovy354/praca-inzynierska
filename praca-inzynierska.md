@@ -105,7 +105,7 @@ to zapytanie przechowywane w zmiennej `db_query` ma postać:
 }
 ```
 
-Takie zapytanie zwraca listę wszystkich postów z\ bazy --- zaistniał wyciek danych. 
+Takie zapytanie zwraca listę wszystkich postów z\ bazy---zaistniał wyciek danych. 
 
 ## Zapobieganie
 
