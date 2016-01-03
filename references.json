@@ -7,14 +7,15 @@
       }
     ],
     "id": "owasp_top_ten",
-    "publisher": "<a href=\"https://www.owasp.org/index.php/Top10#OWASP_Top_10_for_2013\">OWASP official website - owasp.org</a>",
+    "publisher": "Open Web Security Project",
     "title": "OWASP top 10 - 2013: The ten most critical web application security risks",
     "title-short": "OWASP top 10 - 2013",
     "type": "article",
+    "URL": "https://www.owasp.org/index.php/Top10#OWASP_Top_10_for_2013",
     "accessed": {
       "date-parts": [[2015, 10, 13]]
     },
-    "original-date": {
+    "issued": {
       "date-parts": [[2013, 11, 15]]
     }
   },
@@ -26,10 +27,11 @@
       }
     ],
     "id": "nosql_injection",
-    "publisher": "<a href=\"http://erlend.oftedal.no/blog/?blogid=110\">Insomnia and the Hole in the Universe</a>",
+    "publisher": "Insomnia and the Hole in the Universe",
     "title": "NOSQL-injection",
-    "type": "article",
-    "original-date": {
+    "type": "webpage",
+    "URL": "http://erlend.oftedal.no/blog/?blogid=110",
+    "issued": {
       "date-parts": [[2010, 6, 27]]
     },
     "accessed": {
@@ -45,10 +47,10 @@
     ],
     "id": "lulz_sec_sony",
     "publisher": "Epoch Times",
-    "url": "http://www.theepochtimes.com/n3/1497299-lulzsec-member-arrested-group-leaks-sony-database/",
+    "URL": "http://www.theepochtimes.com/n3/1497299-lulzsec-member-arrested-group-leaks-sony-database/",
     "title": "LulzSec Hacker Arrested, Group Leaks Sony Database",
     "type": "article",
-    "original-date": {
+    "issued": {
       "date-parts": [[2011, 6, 6]]
     },
     "accessed": {
@@ -58,15 +60,15 @@
   {
     "author": [
       {
-        "given": "BBC"
+        "family": "BBC News"
       }
     ],
     "id": "130m_cards",
     "publisher": "BBC",
-    "url": "http://news.bbc.co.uk/2/hi/americas/8206305.stm",
+    "URL": "http://news.bbc.co.uk/2/hi/americas/8206305.stm",
     "title": "US man 'stole 130m card numbers' ",
     "type": "article",
-    "original-date": {
+    "issued": {
       "date-parts": [[2009, 8, 18]]
     },
     "accessed": {
@@ -80,15 +82,76 @@
       }
     ],
     "id": "nosql_prevents_injection",
-    "publisher": "MongoDB",
-    "url": "https://docs.mongodb.org/manual/faq/developers/#how-does-mongodb-address-sql-or-query-injection",
+    "publisher": "MongoDB official website",
+    "URL": "https://docs.mongodb.org/manual/faq/developers/#how-does-mongodb-address-sql-or-query-injection",
     "title": "MongoDB FAQ: How does MongoDB address SQL or Query injection?",
     "type": "article",
-    "original-date": {
+    "issued": {
       "date-parts": [[2014]]
     },
     "accessed": {
       "date-parts": [[2015, 10, 3]]
+    }
+  },
+  {
+    "author": [
+      {
+        "given": "Chad",
+        "family": "Dougherty"
+      }
+    ],
+    "id": "md5_not_suitable",
+    "publisher": "CERT",
+    "URL": "https://www.kb.cert.org/vuls/id/836068",
+    "title": "Vulnerability Note VU#836068: MD5 vulnerable to collision attacks",
+    "type": "report",
+    "issued": {
+      "date-parts": [[2008, 12, 31]]
+    },
+    "accessed": {
+      "date-parts": [[2015, 10, 11]]
+    }
+  },
+  {
+    "author": [
+      {
+        "family": "Microsoft"
+      }
+    ],
+    "id": "md5_not_suitable_ms",
+    "publisher": "Microsoft Security TechCenter",
+    "URL": "https://www.kb.cert.org/vuls/id/836068",
+    "title": "Research proves feasibility of collision attacks against MD5",
+    "type": "report",
+    "issued": {
+      "date-parts": [[2008, 12, 30]]
+    },
+    "accessed": {
+      "date-parts": [[2015, 10, 11]]
+    }
+  },
+  {
+    "id": "rainbow_tables",
+    "title": "Free Rainbow Tables",
+    "type": "webpage",
+    "URL": "https://freerainbowtables.com/",
+    "accessed": {
+      "date-parts": [[2015, 12, 2]]
+    }
+  },
+  {
+    "id": "superfish_ssl",
+    "URL": "https://www.ssl.com/article/superfish-adware-uh-oh-lenovo/",
+    "title": "Superfish Adware: Uh Oh, Lenovo",
+    "accessed": {
+      "date-parts": [[2016, 1, 3]]
+    },
+    "issued": {
+      "date-parts": [[2015, 2, 24]]
+    },
+    "publisher": "SSL.com",
+    "author": {
+      "family": "SSL Support Team"
     }
   }
 ]

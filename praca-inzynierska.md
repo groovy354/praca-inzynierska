@@ -1,15 +1,15 @@
 # Wstęp {.unnumbered}
 
-W dzisiejszych czasach praktycznie co tydzień słyszy się w wiadomościach o wielkich wyciekach danych z mniej lub bardziej popularnych serwisów internetowych - dziury w bezpieczeństwie dostępu do danych odnajdywane są nawet w dużych serwisach, nad którymi pracują tysiące inżynierów i programistów. 
+W dzisiejszych czasach praktycznie co tydzień słyszy się w wiadomościach o wielkich wyciekach danych z mniej lub bardziej popularnych serwisów internetowych---dziury w bezpieczeństwie dostępu do danych odnajdywane są nawet w dużych serwisach, nad którymi pracują tysiące inżynierów i programistów. 
 
 Istnieją dwie główne kategorie podatności aplikacji internetowej na wyciek danych:
 
-* wadliwe zabezpieczenia struktury IT---wykorzystywanie dziur w firewallach serwera, łamanie haseł do serwera głównego i inne techniki mogą dać włamywaczowi nieograniczony, bezpośredni dostęp do bazy danych.
-* błąd w kodzie aplikacji internetowej---przez nieuwagę programisty tworzącego daną aplikację zdarza się, że udostępnia użytkownikom dane, do których nie powinni mieć dostępu.
+* **wadliwe zabezpieczenia struktury IT**---wykorzystywanie dziur w firewallach serwera, łamanie haseł do serwera głównego i inne techniki mogą dać włamywaczowi nieograniczony, bezpośredni dostęp do bazy danych.
+* **błąd w kodzie aplikacji internetowej**---przez nieuwagę programisty tworzącego daną aplikację zdarza się, że udostępnia użytkownikom dane, do których nie powinni mieć dostępu.
 
 Zdarza się, że aplikacje o bardzo dobrze zabezpieczonej strukturze IT są podatne na wyciek danych przez błąd programistyczny. W dobie systemów ciągłej integracji, wiecznie rosnącego poziomu skomplikowania aplikacji internetowych i średniego rozmiaru zespołów programistycznych nad nimi pracujących wzrasta prawdopodobieństwo przypadkowego spowodowania wycieku danych.
 
-W\ tej części pracy opiszę szczegółowo główne typy błędów programistów, które skutkują osłabieniem ochrony danych użytkowników, oraz sposoby, w jakie Sealious im zapobiega lub będzie zapobiegał w przyszłych wersjach.
+W tej części pracy opiszę szczegółowo główne typy błędów programistów, które skutkują osłabieniem ochrony danych użytkowników, oraz sposoby, w jakie Sealious im zapobiega lub będzie zapobiegał w przyszłych wersjach^[Należy mieć na uwadze, że Sealious jest frameworkiem do tworzenia nie tylko aplikacji internetowych---może być użyty również jako baza aplikacji *desktopowych*. Biorąc pod uwagę popularność aplikacji webowych w dzisiejszych czasach, opowiem głównie o problemach z bezpieczeństwem w Sieci.].
 
 # *Injection*
 
@@ -122,7 +122,17 @@ Mimo, że o podatności na ataki typu *injection* traktuje bardzo wiele kursów 
 
 ## Jak Sealious zapobiega atakom typu *injection*
 
-Sealious reprezentuje wszystkie zapytania do bazy danych w postaci natywnego dla JavaScript obiektu (hashmapy), zgodnych ze specyfikacją interfejsu programistycznego MongoDB. Każde zapytanie MongoDB jest hashmapą - dlatego np. dla pól typu "`text`" każda wysłana przez użytkownika wartość jest wcześniej rzutowana na `String`. Takie podejście uniemożliwia zajście sytuacji opisanej powyżej.
+Sealious reprezentuje wszystkie zapytania do bazy danych w postaci natywnego dla JavaScript obiektu (hashmapy), zgodnych ze specyfikacją interfejsu programistycznego MongoDB. Każde zapytanie MongoDB jest hashmapą - dlatego np. dla pól typu "`text`" każda wysłana przez użytkownika *wartość pola* jest wcześniej rzutowana na `String`. Takie podejście uniemożliwia zajście sytuacji opisanej powyżej. Takie rzutowanie na typ `String` możemy zaobserwować w poniższym fragmencie kodu^[kod pochodzi z pliku `lib/base-chips/field_type.text.js`, w kodzie źródłowym Sealiousa z wersji `0.6.21`]:
+
+```javascript
+if (value_in_code instanceof Object) {
+    return Promise.resolve(JSON.stringify(value_in_code));
+} else if (value_in_code === null) {
+    return Promise.resolve(null);
+} else {
+    return Promise.resolve(value_in_code.toString());
+}
+```
 
 Dodatkowo, Sealious jest napisany w taki sposób, że docelowy deweloper tworzący aplikację przy jego użyciu nie musi własnoręcznie formułować kwerend do bazy danych - co eliminuje ryzyko przypadkowego uczynienia tej aplikacji podatną na noSQL injection.
 
@@ -135,13 +145,13 @@ W trakcie tworzenia aplikacji deweloperzy często ulegają pokusie stworzenia w�
 
 ## Przebieg ataku
 
-### Scenariusz #1 - ujawnienie id sesji
+### Ujawnienie id sesji
 
 Należy pamiętać, że id sesji jednoznacznie identyfikuje użytkownika i trzeba dbać o to, aby nie zostało ono ujawnione. Rozpatrzmy przebieg ataku na przykładzie hipotetycznej sieci społecznościowej.
 
 1. Użytkownik A loguje się do interfejsu webowego pewnej sieci społecznościowej.
 
-2. Użytkownik A znalazł bardzo śmieszne zdjęcie kota.
+2. Użytkownik A znalazł opublikowane przez kogoś na tym serwisie bardzo śmieszne zdjęcie kota.
  
 3. Widoczny w pasku adresu przeglądarki URL zawiera identyfikator sesji użytkownika: 
    
@@ -157,6 +167,87 @@ Należy pamiętać, że id sesji jednoznacznie identyfikuje użytkownika i trzeb
 
 ### Wyciek haseł
  
+Osoba mająca fizyczny dostęp do bazy danych danej aplikacji (lub zdalny dostęp, za pomocą ataku typu *injection*) może wczytać zawartość tabeli przechowującej dane logowania użytkowników. 
+
+Jeżeli hasła te są przechowywane w postaci jawnego tekstu, atakujący może od razu użyć ich, aby zalogować się jako dowolny użytkownik z pozyskanej tabeli.
+
+## Zapobieganie
+
+### Zapobieganie ujawnieniu id sesji
+
+Id sesji powinno być traktowane jako sekret. Podjęcie następujących kroków zdecydowanie utrudnia atakującemu jego przechwycenie:
+
+* **wymuszenie korzystania z protokołu `HTTPS` do wszystkich zapytań związanych z obsługą sesji**
+
+    Dane wysyłane za pośrednictwem protokołu `HTTPS` są szyfrowane, co utrudnia (ale nie uniemożliwia[^ssl_breakable_footnotes]) ich przechwycenia.
+
+[^ssl_breakable_footnotes]: Odpowiednio zainfekowane maszyny są w stanie umożliwić ataki typu Man-In-The-Middle nawet dla połączeń HTTPS [zob. @superfish_ssl]
+
+* **przechowywanie identyfikatora sesji w pliku cookie zamiast w URL**
+    
+    Jest to bardzo skuteczny sposób zabezpieczenia użytkownika przed przypadkowym samodzielnym zdradzeniem komuś swojego identyfikatora sesji. Raz zapisana w pliku cookie wartość jest automatycznie dołączana przez przeglądarkę internetową do każdego zapytania kierowanego do danej aplikacji, co znosi też z programisty obowiązek upewniania się, że w zapytaniu nie brakuje owego id.
+    
+
+
+### Zapobieganie wyciekaniu haseł
+
+Aby zapobiec wyciekom haseł, można je przechowywać w bazie danych wartości pewnej funkcji hashującej każdego hasła, zamiast haseł w postaci jawnego tekstu. Wtedy przy próbie logowania wystarczy porównać wartość tej funkcji dla podanego przez użytkownika hasła z wartością przechowywaną w bazie.
+
+Często^[zob. https://github.com/search?q=md5%28password%29&type=Code] używaną funkcją haszującą hasła jest `md5` - mimo, że nie jest to funkcja odporna na kolizje [^md5_bad_przypisy].
+
+[^md5_bad_przypisy]: [@md5_not_suitable_ms], [@md5_not_suitable]
+
+Niestety jeżeli atakujący zyska dostęp do zahaszowanych haseł, może użyć ogólnie dostępnych [@rainbow_tables] tablic wartości danej funkcji haszującej do błyskawicznego odgadnięcia haseł (tzw. *rainbow tables*).
+
+Można się przed tym zabezpieczyć używając tzw. "solenia" (ang. *salting*). Proces ten polega na wstępnej modyfikacji tekstu przed obliczeniem dla niego wartości funkcji haszującej^[potrzebny cytat z książki o kryptografii], co utrudnia wykorzystywanie *rainbow tables* do łamania haseł.
+
+## Zarządzanie sesją w Sealiousie[^channel_responsibility_footnote]
+
+### Bezpieczeństwo identyfikatora sesji
+
+[^channel_responsibility_footnote]: Sealious w obecnej odsłonie (wersja `0.6.21-stable` i wersja `0.7-alpha`, stan ze stycznia 2016) nie zawiera mechanizmu sesji - aktualna struktura naszego frameworka wymaga, aby to chipy typu *channel* implementowały swój mechanizm weryfikacji identyfikatora sesji. Części tej sekcji odnoszące się do protokołów `http`(`s`) i plików *cookies* tyczą się konkretnego pluginu do Sealiousa - `sealious-www-server`.
+
+`sealious-www-server`, plugin pozwalający na komunikację z aplikacją Sealiousową za pomocą protokołów `HTTP` i `HTTPS`, ułatwia konfigurację szyfrowania SLL---wystarczy tylko podać adresy portów:
+
+```javascript
+Sealious.ConfigManager.set_config(
+    "chip.channel.www_server", {
+        connections: {
+            https: {
+                port: 4430,
+                tls: {
+                    key: fs.readFileSync("sealious.key"),
+                    cert: fs.readFileSync("sealious.crt")
+                }
+            }
+        }
+    }
+)
+```
+
+`sealious-www-server` nie może domyślnie włączać `HTTPS`, gdyż wymagany do działania tego protokołu jest podpisany certyfikat `TLS`.
+
+Po udanym zalogowaniu identyfikator sesji jest generowany losowo i haszowany za pomocą algorytmu sha1^[poniższy przykład kodu pochodzi z pliku `define/channel.www_server.js` z repozytorium `Sealious/sealious-www-server`]:
+
+```javascript
+function generate_session_id() {
+    var seed = Math.random().toString();
+    var session_id = sha1(seed);
+    return session_id;
+}
+```
+
+Następnie wpisywany jest do nagłówka odpowiedzi HTTP instruującego przeglądarkę do utworzenia nowego wpisu w pliku cookie:
+
+```javascript
+if(request.payload.redirect_success){
+    reply().state('SealiousSession', session_id).redirect(request.payload.redirect_success);
+}else{
+    reply("http_session: Logged in!").state('SealiousSession', session_id);
+}
+```
+
+### Bezpieczeństwo haseł użytkowników
 
 //Cross-site scripting 
 

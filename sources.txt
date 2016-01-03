@@ -15,3 +15,5 @@ http://www.exfiltrated.com/research-Instagram-RCE.php
 Some book on js
 
 Some book on mongoDB
+
+Some book on sql security - add them to intro to examples

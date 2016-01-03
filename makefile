@@ -14,8 +14,12 @@ all: $(filename).$(format)
 $(filename).temp.md: $(filename).md
 	./twarde-spacje.sh $(filename).md $(filename).temp.md
 
-$(filename).$(format): references.json $(filename).temp.md
+# export LC_ALL=pl_PL && 
+# export LANG=pl_PL.UTF-8 && 
+# export LANGUAGE=pl_PL && 
+$(filename).$(format): references.json $(filename).temp.md citation-style.xml
 	pandoc $(filename).temp.md \
+		--csl=citation-style.xml \
 		--standalone \
 		--smart \
 		-V documentclass=report \
