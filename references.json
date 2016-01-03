@@ -153,5 +153,21 @@
     "author": {
       "family": "SSL Support Team"
     }
+  },
+  {
+    "URL": "https://tools.ietf.org/html/rfc2898",
+    "id": "pbkdf2_recommended",
+    "author":[{
+      "given": "B.",
+      "family": "Kaliski"
+    }],
+    "title": "PKCS #5: Password-Based Cryptography Specification, Version 2.0",
+    "shortTitle": "RFC 2898",
+    "issued": {
+      "date-parts": [[2000, 9]]
+    },
+    "accessed": {
+      "date-parts": [[2015, 12, 30]]
+    }
   }
 ]

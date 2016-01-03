@@ -193,7 +193,7 @@ Id sesji powinno być traktowane jako sekret. Podjęcie następujących kroków 
 
 Aby zapobiec wyciekom haseł, można je przechowywać w bazie danych wartości pewnej funkcji hashującej każdego hasła, zamiast haseł w postaci jawnego tekstu. Wtedy przy próbie logowania wystarczy porównać wartość tej funkcji dla podanego przez użytkownika hasła z wartością przechowywaną w bazie.
 
-Często^[zob. https://github.com/search?q=md5%28password%29&type=Code] używaną funkcją haszującą hasła jest `md5` - mimo, że nie jest to funkcja odporna na kolizje [^md5_bad_przypisy].
+Często^[zob. https://github.com/search?q=md5%28password%29&type=Code] używaną funkcją haszującą hasła jest `md5` - mimo, że nie jest to funkcja odporna na kolizje [^md5_bad_przypisy]. Organizacja *Internet Engineering Task Force* zaleca korzystania z algorytmu `PBKDF2` [zob. @pbkdf2_recommended]
 
 [^md5_bad_przypisy]: [@md5_not_suitable_ms], [@md5_not_suitable]
 
@@ -225,7 +225,7 @@ Sealious.ConfigManager.set_config(
 )
 ```
 
-`sealious-www-server` nie może domyślnie włączać `HTTPS`, gdyż wymagany do działania tego protokołu jest podpisany certyfikat `TLS`.
+`sealious-www-server` nie może domyślnie włączać `HTTPS`, gdyż wymagany do działania tego protokołu jest podpisany certyfikat `TLS`---stąd potrzeba ręcznej konfiguracji.
 
 Po udanym zalogowaniu identyfikator sesji jest generowany losowo i haszowany za pomocą algorytmu sha1^[poniższy przykład kodu pochodzi z pliku `define/channel.www_server.js` z repozytorium `Sealious/sealious-www-server`]:
 
@@ -251,6 +251,33 @@ if(request.payload.redirect_success){
 ```
 
 ### Bezpieczeństwo haseł użytkowników
+
+Pole `password` w zasobie typu `user` w Sealiousie jest obsługiwane przez `field_type.hashed_text`. Ten typ pola generuje hash hasła użytkownika używając zalecanego przez organizację *Internet Engineering Task Force* [zob. @pbkdf2_recommended] algorytmu `PBKDF2`:
+
+```javascript
+encode: function(context, params, value_in_code){
+    var salt = "", algorithm = "md5";
+    if (params) {
+        if (params.salt) {
+            salt = params.salt;
+        }
+        else if (params.algorithm) {
+            algorithm = params.algorithm;
+        }
+    }
+    return new Promise(function(resolve, reject){
+        crypto.pbkdf2(
+            value_in_code, salt, 
+            4096, 64, algorithm, 
+            function(err, key){
+                err ? reject(err) : resolve(key.toString('hex'));
+            }
+        );
+    })
+}
+```
+
+Zabezpiecza to hasła użytkowników przed złamaniem w wypadku wycieku informacji z bazy danych.
 
 //Cross-site scripting 
 
