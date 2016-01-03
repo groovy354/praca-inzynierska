@@ -103,7 +103,7 @@ to zapytanie przechowywane w zmiennej `db_query` ma postać:
 }
 ```
 
-Takie zapytanie zwraca listę wszystkich postów z bazy---zaistniał wyciek danych. 
+Takie zapytanie zwraca listę *wszystkich* postów z bazy---nastąpił wyciek danych. 
 
 ## Zapobieganie
 
@@ -111,7 +111,7 @@ Podatność na ataki typu *injection* jest łatwo wykryć w trakcie czytania kod
 
 W przypadku SQL - warto korzystać z poleceń przygotowywanych (ang. *prepared statements*). Polecenia przygotowane są odporne na atak typu *injection*, ponieważ wymagają odseparowania struktury kwerend od danych, co uniemożliwia interpretację danych wpisanych przez użytkownika jako osobnych kwerend.
 
-W przypadku noSQL w dużej mierze wystarczy pilnować, aby kwerenda zawsze była przechowywana w postaci hashmapy, a nie ciągu znaków.
+W przypadku noSQL w dużej mierze wystarczy pilnować, aby kwerenda zawsze była przechowywana w postaci hashmapy, a nie ciągu znaków---bo konkatenacja ciągów znaków umożliwia *injection*.
 
 ## Przykłady ataku typu *injection* w dużych aplikacjach
 
@@ -126,11 +126,11 @@ Sealious reprezentuje wszystkie zapytania do bazy danych w postaci natywnego dla
 
 ```javascript
 if (value_in_code instanceof Object) {
-    return Promise.resolve(JSON.stringify(value_in_code));
+    return JSON.stringify(value_in_code);
 } else if (value_in_code === null) {
-    return Promise.resolve(null);
+    return null
 } else {
-    return Promise.resolve(value_in_code.toString());
+    return value_in_code.toString();
 }
 ```
 
@@ -179,7 +179,7 @@ Id sesji powinno być traktowane jako sekret. Podjęcie następujących kroków 
 
 * **wymuszenie korzystania z protokołu `HTTPS` do wszystkich zapytań związanych z obsługą sesji**
 
-    Dane wysyłane za pośrednictwem protokołu `HTTPS` są szyfrowane, co utrudnia (ale nie uniemożliwia[^ssl_breakable_footnotes]) ich przechwycenia.
+    Dane wysyłane za pośrednictwem protokołu `HTTPS` są szyfrowane, co utrudnia (ale nie uniemożliwia[^ssl_breakable_footnotes]) ich przechwycenie.
 
 [^ssl_breakable_footnotes]: Odpowiednio zainfekowane maszyny są w stanie umożliwić ataki typu Man-In-The-Middle nawet dla połączeń HTTPS [zob. @superfish_ssl]
 
@@ -193,9 +193,11 @@ Id sesji powinno być traktowane jako sekret. Podjęcie następujących kroków 
 
 Aby zapobiec wyciekom haseł, można je przechowywać w bazie danych wartości pewnej funkcji hashującej każdego hasła, zamiast haseł w postaci jawnego tekstu. Wtedy przy próbie logowania wystarczy porównać wartość tej funkcji dla podanego przez użytkownika hasła z wartością przechowywaną w bazie.
 
-Często^[zob. https://github.com/search?q=md5%28password%29&type=Code] używaną funkcją haszującą hasła jest `md5` - mimo, że nie jest to funkcja odporna na kolizje [^md5_bad_przypisy]. Organizacja *Internet Engineering Task Force* zaleca korzystania z algorytmu `PBKDF2` [zob. @pbkdf2_recommended]
+Często^[zob. https://github.com/search?q=md5%28password%29&type=Code] używaną funkcją haszującą hasła jest `md5` - mimo, że zostało wielokrotnie[^md5_bad_przypisy] udowodnione, że nie jest to funkcja odporna na kolizje[^co_to_kolizja]. Organizacja *Internet Engineering Task Force* zaleca korzystania z algorytmu `PBKDF2` [zob. @pbkdf2_recommended]
 
-[^md5_bad_przypisy]: [@md5_not_suitable_ms], [@md5_not_suitable]
+[^md5_bad_przypisy]: m.in. [@md5_not_suitable_ms], [@md5_not_suitable]
+
+[^co_to_kolizja]: "Kolizja" oznacza możliwość wygenerowania w realistycznym czasie ciągu znaków, dla którego dana funkcja haszująca przyjmuje wartość identyczną z zadanym haszem (np. skradzionym z bazy danych). 
 
 Niestety jeżeli atakujący zyska dostęp do zahaszowanych haseł, może użyć ogólnie dostępnych [@rainbow_tables] tablic wartości danej funkcji haszującej do błyskawicznego odgadnięcia haseł (tzw. *rainbow tables*).
 
