@@ -1,0 +1,39 @@
+[
+  {
+    "author": [
+      {
+        "family": "Wichers",
+        "given": "Dave"
+      }
+    ],
+    "id": "owasp_top_ten",
+    "publisher": "<a href=\"https://www.owasp.org/index.php/Top10#OWASP_Top_10_for_2013\">OWASP official website - owasp.org</a>",
+    "title": "OWASP top 10 - 2013: The ten most critical web application security risks",
+    "title-short": "OWASP top 10 - 2013",
+    "type": "article",
+    "accessed": {
+      "date-parts": [[2015, 10, 13]]
+    },
+    "original-date": {
+      "date-parts": [[2013, 11, 15]]
+    }
+  },
+  {
+    "author": [
+      {
+        "family": "Oftedal",
+        "given": "Erlend"
+      }
+    ],
+    "id": "nosql_injection",
+    "publisher": "<a href=\"http://erlend.oftedal.no/blog/?blogid=110\">Insomnia and the Hole in the Universe</a>",
+    "title": "NOSQL-injection",
+    "type": "article",
+    "original-date": {
+      "date-parts": [[2010, 6, 27]]
+    },
+    "accessed": {
+      "date-parts": [[2015, 10, 13]]
+    }
+  }
+]
