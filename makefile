@@ -11,8 +11,11 @@ endif
 all: $(filename).$(format)
 	make $(filename).$(format)
 
-$(filename).$(format): $(filename).md references.json
-	pandoc $(filename).md \
+$(filename).temp.md: $(filename).md
+	./twarde-spacje.sh $(filename).md $(filename).temp.md
+
+$(filename).$(format): references.json $(filename).temp.md
+	pandoc $(filename).temp.md \
 		--standalone \
 		--smart \
 		-V documentclass=report \
@@ -27,4 +30,4 @@ $(filename).$(format): $(filename).md references.json
 	xdg-open $(filename).$(format)
 
 clean:
-	rm -f $(filename).pdf $(filename).odt $(filename).html $(filename).docx
+	rm -f $(filename).temp.md $(filename).pdf $(filename).odt $(filename).html $(filename).docx 
