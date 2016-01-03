@@ -4,8 +4,8 @@ W dzisiejszych czasach praktycznie co tydzień słyszy się w\ wiadomościach o\
 
 Istnieją dwie główne kategorie podatności aplikacji internetowej na wyciek danych:
 
-* wadliwe zabezpieczenia struktury IT --- wykorzystywanie dziur w\ firewallach serwera, łamanie haseł do serwera głównego i\ inne techniki mogą dać włamywaczowi nieograniczony, bezpośredni dostęp do bazy danych.
-* błąd w\ kodzie aplikacji internetowej --- przez nieuwagę programisty tworzącego daną aplikację zdarza się, że udostępnia użytkownikom dane, do których nie powinni mieć dostępu.
+* wadliwe zabezpieczenia struktury IT---wykorzystywanie dziur w\ firewallach serwera, łamanie haseł do serwera głównego i\ inne techniki mogą dać włamywaczowi nieograniczony, bezpośredni dostęp do bazy danych.
+* błąd w\ kodzie aplikacji internetowej---przez nieuwagę programisty tworzącego daną aplikację zdarza się, że udostępnia użytkownikom dane, do których nie powinni mieć dostępu.
 
 Zdarza się, że aplikacje o\ bardzo dobrze zabezpieczonej strukturze IT są podatne na wyciek danych przez błąd programistyczny. W\ dobie systemów ciągłej integracji, wiecznie rosnącego poziomu skomplikowania aplikacji internetowych i\ średniego rozmiaru zespołów programistycznych nad nimi pracujących wzrasta prawdopodobieństwo przypadkowego spowodowania wycieku danych.
 
@@ -109,7 +109,7 @@ Takie zapytanie zwraca listę wszystkich postów z\ bazy---zaistniał wyciek dan
 
 ## Zapobieganie
 
-Podatność na ataki typu *injection* jest łatwo wykryć w\ trakcie czytania kodu --- dlatego warto dbać o to, aby każda linijka kodu odpowiedzialna za komunikację z\ bazą danych w aplikacji internetowej była przejrzana i\ zaakceptowana przez innego członka zespołu, niż jej autor. 
+Podatność na ataki typu *injection* jest łatwo wykryć w\ trakcie czytania kodu---dlatego warto dbać o to, aby każda linijka kodu odpowiedzialna za komunikację z\ bazą danych w aplikacji internetowej była przejrzana i\ zaakceptowana przez innego członka zespołu, niż jej autor. 
 
 W przypadku SQL - warto korzystać z poleceń przygotowywanych (ang. *prepared statements*). Polecenia przygotowane są odporne na atak typu *injection*, ponieważ wymagają odseparowania struktury kwerend od danych, co uniemożliwia interpretację danych wpisanych przez użytkownika jako osobnych kwerend.
 
