@@ -22,7 +22,7 @@ $(filename).$(format): $(filename).md references.json
 		-V papersize=a4paper \
 		-V fontsize=12pt \
 		-V lang=pl-PL \
-		-V filename=kupa \
+		-V title=$(title) \
 		-o $(filename).$(format) && \
 	xdg-open $(filename).$(format)
 
