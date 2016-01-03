@@ -52,7 +52,7 @@ co sprawi, że w\ zmiennej `query` przechowywane będzie zapytanie w\ postaci:
     SELECT * FROM accounts WHERE username='' or '1'='1'
 ```
 
-Takie zapytanie zamiast zwracać jednego użytkownika, zwraca całą zawartość tabeli `accounts` - co może doprowadzić do niepożądanego wycieku danych. 
+Takie zapytanie zamiast zwracać dane jednego użytkownika, zwraca całą zawartość tabeli `accounts` - co może doprowadzić do niepożądanego wycieku danych. 
 
 ### Przykład - NoSQL
 
@@ -113,13 +113,25 @@ Podatność na ataki typu *injection* jest łatwo wykryć w\ trakcie czytania ko
 
 W przypadku SQL - warto korzystać z poleceń przygotowywanych (ang. *prepared statements*). Polecenia przygotowane są odporne na atak typu *injection*, ponieważ wymagają odseparowania struktury kwerend od danych, co uniemożliwia interpretację danych wpisanych przez użytkownika jako osobnych kwerend.
 
+W przypadku noSQL w dużej mierze wystarczy pilnować, aby kwerenda zawsze była przechowywana w postaci hashmapy, a nie ciągu znaków.
+
+## Przykłady ataku typu *injection* w dużych aplikacjach
+
+Mimo, że o podatności na ataki typu *injection* traktuje bardzo wiele kursów o bezpieczeństwie aplikacji internetowych^[potrzebne cytaty], to wciąż notorycznie słyszy się o poważnych w skutkach atakach osiągniętych przez wykorzystywanie właśnie tej dziury w zabezpieczeniach:
+
+* Słynny [@lulz_sec_sony]
+
 ## Jak Sealious zapobiega atakom typu *injection*
 
-Sealious reprezentuje wszystkie zapytania do bazy danych w postaci natywnego dla JavaScript obiektu (hashmapy), zgodnie ze specyfikacją interfejsu programistycznego MongoDB. Każde zapytanie MongoDB jest hashmapą - dlatego np. dla pól typu "`text`" każda wysłana przez użytkownika wartość jest wcześniej rzutowana na `String`, co uniemożliwia jej interpretację jako zapytania bazy danych. 
+Sealious reprezentuje wszystkie zapytania do bazy danych w postaci natywnego dla JavaScript obiektu (hashmapy), zgodnych ze specyfikacją interfejsu programistycznego MongoDB. Każde zapytanie MongoDB jest hashmapą - dlatego np. dla pól typu "`text`" każda wysłana przez użytkownika wartość jest wcześniej rzutowana na `String`. Takie podejście uniemożliwia zajście sytuacji opisanej powyżej.
+
+Dodatkowo, Sealious jest napisany w taki sposób, że docelowy deweloper tworzący aplikację przy jego użyciu nie musi własnoręcznie formułować kwerend do bazy danych - co eliminuje ryzyko przypadkowego uczynienia tej aplikacji podatną na noSQL injection.
+
+# Błędy w autentykacji i zarządzaniu sesją
+
+W trakcie tworzenia aplikacji deweloperzy często ulegają pokusie stworzenia własnego procesu autentykacji użytkownika. Nie jest to łatwe zadanie, dlatego potencjalnie taka aplikacja jest podatna na ataki, w których złośliwy agent podszywa się pod uprzywilejowanego użytkownika.
 
 
-
-//broken authentication and session management
 
 //Cross-site scripting 
 

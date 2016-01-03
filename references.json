@@ -35,5 +35,24 @@
     "accessed": {
       "date-parts": [[2015, 10, 13]]
     }
+  },
+  {
+    "author": [
+      {
+        "family": "Ridge",
+        "given": "Shan"
+      }
+    ],
+    "id": "lulz_sec_sony",
+    "publisher": "Epoch Times",
+    "url": "http://www.theepochtimes.com/n3/1497299-lulzsec-member-arrested-group-leaks-sony-database/",
+    "title": "LulzSec Hacker Arrested, Group Leaks Sony Database",
+    "type": "article",
+    "original-date": {
+      "date-parts": [[2011, 6, 6]]
+    },
+    "accessed": {
+      "date-parts": [[2015, 10, 2]]
+    }
   }
 ]
