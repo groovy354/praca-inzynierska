@@ -241,9 +241,12 @@ Następnie wpisywany jest do nagłówka odpowiedzi HTTP instruującego przegląd
 
 ```javascript
 if(request.payload.redirect_success){
-    reply().state('SealiousSession', session_id).redirect(request.payload.redirect_success);
+    reply()
+        .state('SealiousSession', session_id)
+        .redirect(request.payload.redirect_success);
 }else{
-    reply("http_session: Logged in!").state('SealiousSession', session_id);
+    reply("http_session: Logged in!")
+        .state('SealiousSession', session_id);
 }
 ```
 
