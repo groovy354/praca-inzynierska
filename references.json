@@ -54,5 +54,41 @@
     "accessed": {
       "date-parts": [[2015, 10, 2]]
     }
+  },
+  {
+    "author": [
+      {
+        "given": "BBC"
+      }
+    ],
+    "id": "130m_cards",
+    "publisher": "BBC",
+    "url": "http://news.bbc.co.uk/2/hi/americas/8206305.stm",
+    "title": "US man 'stole 130m card numbers' ",
+    "type": "article",
+    "original-date": {
+      "date-parts": [[2009, 8, 18]]
+    },
+    "accessed": {
+      "date-parts": [[2015, 10, 2]]
+    }
+  },
+  {
+    "author": [
+      {
+        "family": "MongoDB"
+      }
+    ],
+    "id": "nosql_prevents_injection",
+    "publisher": "MongoDB",
+    "url": "https://docs.mongodb.org/manual/faq/developers/#how-does-mongodb-address-sql-or-query-injection",
+    "title": "MongoDB FAQ: How does MongoDB address SQL or Query injection?",
+    "type": "article",
+    "original-date": {
+      "date-parts": [[2014]]
+    },
+    "accessed": {
+      "date-parts": [[2015, 10, 3]]
+    }
   }
 ]

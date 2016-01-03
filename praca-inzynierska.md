@@ -13,8 +13,6 @@ W\ tej części pracy opiszę szczegółowo główne typy błędów programistó
 
 # *Injection*
 
-## Opis
-
 *Injection* (ang. "wstrzyknięcie") to rodzaj ataku pozwalający atakującemu na wywołanie dowolnej kwerendy SQL (lub noSQL) na serwerze. Napisana przez atakującego kwerenda może usuwać ważne dane z bazy lub nadawać większe uprawnienia pewnym użytkownikom, co może doprowadzić do wycieku danych.
 
 Podatność na *injection* występuje bardzo często - zajmuje pozycję #1 na liście najpopularniejszych podatności aplikacji webowych [zob. @owasp_top_ten, p. 7]
@@ -56,7 +54,7 @@ Takie zapytanie zamiast zwracać dane jednego użytkownika, zwraca całą zawart
 
 ### Przykład - NoSQL
 
-Mimo, że języki NoSQL projektowane były z myślą o zapobieganiu atakom typu *injection*, nieuważny programista wciąż może sprawić, że aplikacja ujawni atakującemu informacje, do których ten nie powinien mieć dostępu [zob. @nosql_injection].
+Mimo, że języki NoSQL projektowane były z myślą o zapobieganiu atakom typu *injection* [@nosql_prevents_injection], nieuważny programista wciąż może sprawić, że aplikacja ujawni atakującemu informacje, do których ten nie powinien mieć dostępu [zob. @nosql_injection].
 
 Rozpatrzmy prosty przykład aplikacji, która umożliwia publikowanie oraz przeglądanie postów. W tej aplikacji użytkownik ma dostęp tylko do: 
 
@@ -119,7 +117,8 @@ W przypadku noSQL w dużej mierze wystarczy pilnować, aby kwerenda zawsze była
 
 Mimo, że o podatności na ataki typu *injection* traktuje bardzo wiele kursów o bezpieczeństwie aplikacji internetowych^[potrzebne cytaty], to wciąż notorycznie słyszy się o poważnych w skutkach atakach osiągniętych przez wykorzystywanie właśnie tej dziury w zabezpieczeniach:
 
-* Słynny [@lulz_sec_sony]
+* słynny atak LulzSec na sieć PlayStation Network - w wyniku którego atakujący zyskali pełen dostęp do bazy danych i kodu źródłowego serwisu [@lulz_sec_sony]
+* w 2009 roku pewien Amerykanin wykradł dane kart kredytowych 130 milionów obywateli za pomocą *SQL injection* [@130m_cards]
 
 ## Jak Sealious zapobiega atakom typu *injection*
 
@@ -127,11 +126,37 @@ Sealious reprezentuje wszystkie zapytania do bazy danych w postaci natywnego dla
 
 Dodatkowo, Sealious jest napisany w taki sposób, że docelowy deweloper tworzący aplikację przy jego użyciu nie musi własnoręcznie formułować kwerend do bazy danych - co eliminuje ryzyko przypadkowego uczynienia tej aplikacji podatną na noSQL injection.
 
+
+
+
 # Błędy w autentykacji i zarządzaniu sesją
 
 W trakcie tworzenia aplikacji deweloperzy często ulegają pokusie stworzenia własnego procesu autentykacji użytkownika. Nie jest to łatwe zadanie, dlatego potencjalnie taka aplikacja jest podatna na ataki, w których złośliwy agent podszywa się pod uprzywilejowanego użytkownika.
 
+## Przebieg ataku
 
+### Scenariusz #1 - ujawnienie id sesji
+
+Należy pamiętać, że id sesji jednoznacznie identyfikuje użytkownika i trzeba dbać o to, aby nie zostało ono ujawnione. Rozpatrzmy przebieg ataku na przykładzie hipotetycznej sieci społecznościowej.
+
+1. Użytkownik A loguje się do interfejsu webowego pewnej sieci społecznościowej.
+
+2. Użytkownik A znalazł bardzo śmieszne zdjęcie kota.
+ 
+3. Widoczny w pasku adresu przeglądarki URL zawiera identyfikator sesji użytkownika: 
+   
+    http://example.com/pics/7553?**jsessionid=9cdfb439c7876e**
+ 
+4. Użytkownik A zechciał podzielić się radością płynącą z tego zdjęcia ze swoim znajomym, użytkownikiem B, więc skopiował URL z paska adresu i wkleił go do treści wiadomości email, po czym wysłał ją.
+ 
+5. Użytkownik B wiadomości otwiera zawarty w tej wiadomości link.
+ 
+6. Serwer odbiera zapytanie wywołane przez otwarcie przez użytkownika B tego linku, wczytuje id sesji z URL i rozpoznaje w nim użytkownika A.
+ 
+7. Użytkownik B jest zalogowany do sieci społecznościowej jako użytkownik A.
+
+### Wyciek haseł
+ 
 
 //Cross-site scripting 
 

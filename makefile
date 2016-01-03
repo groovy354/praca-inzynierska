@@ -19,7 +19,7 @@ $(filename).$(format): references.json $(filename).temp.md
 		--standalone \
 		--smart \
 		-V documentclass=report \
-		-f markdown+footnotes+backtick_code_blocks+inline_notes \
+		-f markdown+footnotes+backtick_code_blocks+inline_notes+raw_html \
 		--toc \
 		--bibliography references.json \
 		-V papersize=a4paper \
