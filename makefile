@@ -27,6 +27,7 @@ $(filename).$(format): references.json $(filename).temp.md citation-style.xml wm
 		-V geometry:"inner=3cm, outer=2cm, top=2.5cm, bottom=2.5cm" \
 		--standalone \
 		--smart \
+		--toc-depth=2 \
 		-V documentclass=report \
 		-f markdown+footnotes+backtick_code_blocks+inline_notes+raw_html \
 		--toc \
@@ -34,6 +35,7 @@ $(filename).$(format): references.json $(filename).temp.md citation-style.xml wm
 		-V papersize=a4paper \
 		-V fontsize=12pt \
 		-V lang=pl-PL \
+		--metadata lang=pl-PL \
 		-V title=$(title) \
 		-o $(filename).$(format) && \
 	xdg-open $(filename).$(format)

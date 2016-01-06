@@ -169,5 +169,61 @@
     "accessed": {
       "date-parts": [[2015, 12, 30]]
     }
+  },
+  {
+    "URL": "https://tools.ietf.org/html/rfc2898",
+    "id": "uuid_rfc",
+    "author":[{
+      "given": "P.",
+      "family": "Leach"
+    },{
+      "family": "Microsoft"
+    },{
+      "given": "M.",
+      "family": "Mealling"
+    },{
+      "family": "Refactored Networks, LLC"
+    },{
+      "given": "R.",
+      "family": "Salz"
+    },{
+      "family": "DataPower Technology, Inc."
+    }],
+    "title": "A Universally Unique IDentifier (UUID) URN Namespace",
+    "shortTitle": "RFC 4122",
+    "issued": {
+      "date-parts": [[2006, 7]]
+    },
+    "accessed": {
+      "date-parts": [[2015, 12, 30]]
+    }
+  },
+  {
+    "id": "ajax_guide",
+    "title": "Ajax: The Definitive Guide: Interactive applications for the Web",
+    "type": "book",
+    "author": [{
+        "family": "Holender",
+        "given": "Anthony T. III"
+    }],
+    "issued":{
+      "date-parts": [[2008, 1]]
+    },
+    "publisher": "O'Reilly Media"
+  },
+  {
+    "id": "facebook_idor",
+    "url": "http://www.anandpraka.sh/2015/12/summary-this-blog-post-is-about.html",
+    "title": "How I could have removed all your Facebook notes",
+    "author": [{
+      "family": "Prakash",
+      "given": "Anand"
+    }],
+    "issued": {
+      "date-parts": [[2015, 12, 13]]
+    },
+    "accessed": {
+      "date-parts": [[2016, 1, 3]]
+    }
   }
 ]
