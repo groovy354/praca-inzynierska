@@ -3,28 +3,33 @@
 # If a need to change the font to Times arisises, add this line to the `wmi.sty` file:
 # \usepackage{times}
 
-filename := praca-inzynierska
-title := "Odniesienie się do kwestii bezpieczeństwa i zależności pomiędzy dokumentami w Sealiousie"
+filenames := 0-wstep.md 2-bezpieczenstwo.md
+result_filename := praca-inzynierska
+title := "Rozwój open-source’owego frameworka do tworzenia aplikacji - \"Sealious\""
 
 ifdef format
 else
 	format=pdf
 endif
 
-all: $(filename).$(format)
-	make $(filename).$(format)
+all: $(result_filename).$(format)
+	make $(result_filename).$(format)
 
-$(filename).temp.md: $(filename).md
-	./twarde-spacje.sh $(filename).md $(filename).temp.md
+concatenated.temp: $(filenames)
+	cat $(filenames) > concatenated.temp
+
+$(result_filename).temp: concatenated.temp
+	./twarde-spacje.sh concatenated.temp $(result_filename).temp
 
 # export LC_ALL=pl_PL && 
 # export LANG=pl_PL.UTF-8 && 
 # export LANGUAGE=pl_PL && 
-$(filename).$(format): references.json $(filename).temp.md citation-style.xml wmi.sty
-	pandoc $(filename).temp.md \
+$(result_filename).$(format): references.json concatenated.temp citation-style.xml wmi.sty
+	pandoc concatenated.temp \
 		--csl=citation-style.xml \
 		-H wmi.sty \
 		-V geometry:"inner=3cm, outer=2cm, top=2.5cm, bottom=2.5cm" \
+		--latex-engine=xelatex \
 		--standalone \
 		--smart \
 		--toc-depth=2 \
@@ -37,8 +42,8 @@ $(filename).$(format): references.json $(filename).temp.md citation-style.xml wm
 		-V lang=pl-PL \
 		--metadata lang=pl-PL \
 		-V title=$(title) \
-		-o $(filename).$(format) && \
-	xdg-open $(filename).$(format)
+		-o $(result_filename).$(format) && \
+	xdg-open $(result_filename).$(format)
 
 clean:
-	rm -f $(filename).temp.md $(filename).pdf $(filename).odt $(filename).html $(filename).docx 
+	rm -f $(result_filename).temp $(result_filename).pdf $(result_filename).odt $(result_filename).html $(result_filename).docx concatenated.temp

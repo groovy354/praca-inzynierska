@@ -1,23 +1,23 @@
 # Odniesienie się do kwestii bezpieczeństwa i zależności pomiędzy dokumentami w Sealiousie
 
-## Wstęp {.unnumbered}
+## Wstęp {-}
 
 W dzisiejszych czasach praktycznie co tydzień słyszy się w wiadomościach o wielkich wyciekach danych z mniej lub bardziej popularnych serwisów internetowych---dziury w bezpieczeństwie dostępu do danych odnajdywane są nawet w dużych serwisach, nad którymi pracują tysiące inżynierów i programistów. 
 
-Istnieją dwie główne kategorie podatności aplikacji internetowej na wyciek danych:
+Zdarza się, że aplikacje o bardzo dobrze zabezpieczonej strukturze IT są podatne na wyciek danych przez błąd programistyczny. W dobie systemów ciągłej integracji, wiecznie rosnącego poziomu skomplikowania aplikacji internetowych i średniego rozmiaru zespołów programistycznych nad nimi pracujących wzrasta prawdopodobieństwo przypadkowego spowodowania wycieku danych.
+
+Wyłaniają się dwie główne kategorie źródeł podatności aplikacji internetowej na wyciek danych:
 
 * **wadliwe zabezpieczenia struktury IT**---wykorzystywanie dziur w firewallach serwera, łamanie haseł do serwera głównego i inne techniki mogą dać włamywaczowi nieograniczony, bezpośredni dostęp do bazy danych.
 * **błąd w kodzie aplikacji internetowej**---przez nieuwagę programisty tworzącego daną aplikację zdarza się, że udostępnia użytkownikom dane, do których nie powinni mieć dostępu.
 
-Zdarza się, że aplikacje o bardzo dobrze zabezpieczonej strukturze IT są podatne na wyciek danych przez błąd programistyczny. W dobie systemów ciągłej integracji, wiecznie rosnącego poziomu skomplikowania aplikacji internetowych i średniego rozmiaru zespołów programistycznych nad nimi pracujących wzrasta prawdopodobieństwo przypadkowego spowodowania wycieku danych.
-
-W tej części pracy opiszę szczegółowo główne typy błędów programistów, które skutkują osłabieniem ochrony danych użytkowników, oraz sposoby, w jakie Sealious im zapobiega lub będzie zapobiegał w przyszłych wersjach^[Należy mieć na uwadze, że Sealious jest frameworkiem do tworzenia nie tylko aplikacji internetowych---może być użyty również jako baza aplikacji *desktopowych*. Biorąc pod uwagę popularność aplikacji webowych w dzisiejszych czasach, opowiem głównie o problemach z bezpieczeństwem w Sieci.].
+W tej części pracy skupię się na drugiej kategorii: błędach programistów, które skutkują osłabieniem ochrony danych użytkowników -- ponieważ są to problemy, którym framework programistyczny (w tym przypadku Sealious) jest w stanie zapobiec.  Omówię sposoby, w jakie Sealious tym problemom przeciwdziała lub będzie przeciwdziałał w przyszłych wersjach^[Należy mieć na uwadze, że Sealious jest frameworkiem do tworzenia nie tylko aplikacji internetowych---może być użyty również jako baza aplikacji *desktopowych*. Biorąc pod uwagę popularność aplikacji webowych w dzisiejszych czasach, opowiem głównie o problemach z bezpieczeństwem w Sieci.].
 
 ## *Injection*
 
 *Injection* (ang. "wstrzyknięcie") to rodzaj ataku pozwalający atakującemu na wywołanie dowolnej kwerendy SQL (lub noSQL) na serwerze. Napisana przez atakującego kwerenda może usuwać ważne dane z bazy lub nadawać większe uprawnienia pewnym użytkownikom, co może doprowadzić do wycieku danych.
 
-Podatność na *injection* występuje bardzo często - zajmuje pozycję ##1 na liście najpopularniejszych podatności aplikacji webowych [zob. @owasp_top_ten, p. 7]
+Podatność na *injection* występuje bardzo często - zajmuje pozycję #1 na liście najpopularniejszych podatności aplikacji webowych [zob. @owasp_top_ten, p. 7]
 
 ### Przebieg ataku
 
@@ -117,7 +117,7 @@ W przypadku noSQL w dużej mierze wystarczy pilnować, aby kwerenda zawsze była
 
 ### Przykłady ataku typu *injection* w dużych aplikacjach
 
-Mimo, że o podatności na ataki typu *injection* traktuje bardzo wiele kursów o bezpieczeństwie aplikacji internetowych^[potrzebne cytaty], to wciąż notorycznie słyszy się o poważnych w skutkach atakach osiągniętych przez wykorzystywanie właśnie tej dziury w zabezpieczeniach:
+Mimo, że o podatności na ataki typu *injection* traktuje bardzo wiele kursów o bezpieczeństwie aplikacji internetowych, to wciąż notorycznie słyszy się o poważnych w skutkach atakach osiągniętych przez wykorzystywanie właśnie tej dziury w zabezpieczeniach:
 
 * słynny atak LulzSec na sieć PlayStation Network - w wyniku którego atakujący zyskali pełen dostęp do bazy danych i kodu źródłowego serwisu [@lulz_sec_sony]
 * w 2009 roku pewien Amerykanin wykradł dane kart kredytowych 130 milionów obywateli za pomocą *SQL injection* [@130m_cards]
@@ -136,14 +136,14 @@ if (value_in_code instanceof Object) {
 }
 ```
 
-Dodatkowo, Sealious jest napisany w taki sposób, że docelowy deweloper tworzący aplikację przy jego użyciu nie musi własnoręcznie formułować kwerend do bazy danych - co eliminuje ryzyko przypadkowego uczynienia tej aplikacji podatną na noSQL injection.
+Dodatkowo, Sealious jest napisany w taki sposób, że docelowy deweloper tworzący aplikację przy jego użyciu nie musi własnoręcznie formułować kwerend do bazy danych^[Sealious automatycznie buduje bogate w funkcjonalności API dla aplikacji klienckich, co znosi z barków dewelopera odpowiedzialność za pisanie kwerend do bazy danych] - co eliminuje ryzyko przypadkowego uczynienia tej aplikacji podatną na noSQL injection.
 
 
 
 
-## Błędy w autentykacji i zarządzaniu sesją
+## Błędy w uwierzytelnianiu i zarządzaniu sesją
 
-W trakcie tworzenia aplikacji deweloperzy często ulegają pokusie stworzenia własnego procesu autentykacji użytkownika. Nie jest to łatwe zadanie, dlatego potencjalnie taka aplikacja jest podatna na ataki, w których złośliwy agent podszywa się pod uprzywilejowanego użytkownika.
+W trakcie tworzenia aplikacji deweloperzy często ulegają pokusie stworzenia własnego procesu uwierzytelnianiu użytkownika. Nie jest to łatwe zadanie, dlatego potencjalnie taka aplikacja jest podatna na ataki, w których złośliwy agent podszywa się pod uprzywilejowanego użytkownika.
 
 ### Przebieg ataku
 
@@ -203,7 +203,7 @@ Często^[zob. https://github.com/search?q=md5%28password%29&type=Code] używaną
 
 Niestety jeżeli atakujący zyska dostęp do zahaszowanych haseł, może użyć ogólnie dostępnych [@rainbow_tables] tablic wartości danej funkcji haszującej do błyskawicznego odgadnięcia haseł (tzw. *rainbow tables*).
 
-Można się przed tym zabezpieczyć używając tzw. "solenia" (ang. *salting*). Proces ten polega na wstępnej modyfikacji tekstu przed obliczeniem dla niego wartości funkcji haszującej^[potrzebny cytat z książki o kryptografii], co utrudnia wykorzystywanie *rainbow tables* do łamania haseł.
+Można się przed tym zabezpieczyć używając tzw. "solenia" (ang. *salting*). Proces ten polega na wstępnej modyfikacji tekstu przed obliczeniem dla niego wartości funkcji haszującej, co utrudnia wykorzystywanie *rainbow tables* do łamania haseł.
 
 ### Zarządzanie sesją w Sealiousie[^channel_responsibility_footnote]
 
@@ -211,7 +211,7 @@ Można się przed tym zabezpieczyć używając tzw. "solenia" (ang. *salting*). 
 
 [^channel_responsibility_footnote]: Sealious w obecnych odsłonach (wersja `0.6.21-stable` i wersja `0.7-alpha`, stan ze stycznia 2016) nie zawiera mechanizmu sesji - aktualna struktura naszego frameworka wymaga, aby to chipy typu *channel* implementowały swój mechanizm weryfikacji identyfikatora sesji. Części tej sekcji odnoszące się do protokołów `http`(`s`) i plików *cookies* tyczą się konkretnego pluginu do Sealiousa - `sealious-www-server`.
 
-`sealious-www-server`, plugin pozwalający na komunikację z aplikacją Sealiousową za pomocą protokołów `HTTP` i `HTTPS`, ułatwia konfigurację szyfrowania SLL---wystarczy tylko podać adresy portów:
+`sealious-www-server`, plugin pozwalający na komunikację z aplikacją sealiousową za pomocą protokołów `HTTP` i `HTTPS`, ułatwia konfigurację szyfrowania SLL---wystarczy tylko podać adresy portów:
 
 ```javascript
 Sealious.ConfigManager.set_config(
@@ -231,7 +231,7 @@ Sealious.ConfigManager.set_config(
 
 `sealious-www-server` nie może domyślnie włączać `HTTPS`, gdyż wymagany do działania tego protokołu jest podpisany certyfikat `TLS`---stąd potrzeba ręcznej konfiguracji.
 
-Po udanym zalogowaniu identyfikator sesji jest generowany losowo i haszowany za pomocą algorytmu sha1^[poniższy przykład kodu pochodzi z pliku `define/channel.www_server.js` z repozytorium `Sealious/sealious-www-server`]:
+Po udanym zalogowaniu identyfikator sesji jest generowany losowo i haszowany za pomocą algorytmu sha1[^sha1_footnote]:
 
 ```javascript
 function generate_session_id() {
@@ -240,6 +240,10 @@ function generate_session_id() {
     return session_id;
 }
 ```
+
+[^sha1_footnote]: Podany fragment kodu pochodzi z pliku `define/channel.www_server.js` z repozytorium `Sealious/sealious-www-server`.
+
+    Kod ten wykorzystuje funkcję sha1 z uwagi na jej szybkie działanie---jej brak odporności na kolizję nie stanowi w tym przypadku problemu, gdyż wygenerowanie ciągu znaków dającego wartość funkcji sha1 identyczną z id sesji w niczym nie pomoże atakującemu. Atakujący po uzyskaniu dostępu do identyfikator sesji może po prostu umieścić go w nagłówku HTTP, aby uzyskać dostęp do danych użytkownika---bez potrzeby odszyfrowywania hasha,  jak to ma miejsce w przypadku zahashowanych haseł.
 
 Następnie wpisywany jest do nagłówka odpowiedzi HTTP instruującego przeglądarkę do utworzenia nowego wpisu w pliku cookie:
 
@@ -256,7 +260,7 @@ if(request.payload.redirect_success){
 
 #### Bezpieczeństwo haseł użytkowników
 
-Pole `password` w zasobie typu `user` w Sealiousie jest obsługiwane przez `field_type.hashed_text`. Ten typ pola generuje hash hasła użytkownika używając zalecanego przez organizację *Internet Engineering Task Force* [zob. @pbkdf2_recommended] algorytmu `PBKDF2`:
+Pole `password` w zasobie typu `user` w Sealiousie jest obsługiwane przez `field_type.hashed_text`. Ten typ pola generuje hash hasła użytkownika używając zalecanego przez organizację *Internet Engineering Task Force* [zob. @pbkdf2_recommended] algorytmu `PBKDF2`^[zdecydowaliśmy się wybrać algorytm `PBKDF` z uwagi na jego odporność na kolizje -- mając na uwadze, że jest on bardziej wymagający obliczeniowo niż proste hashowanie przy pomocy `md5`]:
 
 ```javascript
 encode: function(context, params, value_in_code){
@@ -348,7 +352,7 @@ var field_type_text = new Sealious.FieldType({
 });
 ```
 
-Dzięki temu opisany powyżej input złośliwego użytkownika zostałby w aplikacji Sealiousowej przed zapisaniem do bazy danych zamieniony na:
+Dzięki temu opisany powyżej input złośliwego użytkownika zostałby w aplikacji sealiousowej przed zapisaniem do bazy danych zamieniony na:
 
 ```
 Jestem złośliwym użytkownikiem
@@ -358,7 +362,7 @@ Tekst ten jest pozbawiony tagów `<script>` (wraz z ich zawartością), co uniem
 
 ## Insecure Direct Object Reference
 
-Podatność aplikacji na *Insecure Direct Object Reference* (*"niezabezpieczone bezpośrednie odwołanie do obiektu"*) oznacza, że użytkownik może uzyskać dostęp do zasobu, który powinien być przed nim ukryty, podmieniając tylko identyfikator tego zasobu w `URL` lub w parametrze zdalnego wywołania metody serwera.
+*Insecure Direct Object Reference* (*"niezabezpieczone bezpośrednie odwołanie do obiektu"*) oznacza, że użytkownik może uzyskać dostęp do zasobu, który powinien być przed nim ukryty, podmieniając tylko identyfikator tego zasobu w `URL` lub w parametrze zdalnego wywołania metody serwera.
 
 Automatyczne testy nie mogą łatwo wykryć podatności tego typu, gdy aplikacja nie posiada deklaratywnego opisu tego, który użytkownik ma dostęp do jakiego zasobu^[bez takiego opisu wnioskowanie nt. uprawnień użytkowników do konkretnych zasobów może być dokonane tylko poprzez czytanie *imperatywnego* kodu aplikacji - co wymaga intuicji ludzkiej].
 
@@ -384,7 +388,7 @@ Atakujący musi tylko podmienić wartość parametru `user_id` w zapytaniu do se
 GET /app/confidentialUserInfo?user_id=nie_moje_id
 ```
 
-### Zapobieganie podatności na *Insecure Direct Object Reference*
+### Zapobieganie *Insecure Direct Object Reference*
 
 Istnieją dwa główne podejścia zapobiegania tego typu podatności na atak:
 
@@ -396,11 +400,11 @@ Istnieją dwa główne podejścia zapobiegania tego typu podatności na atak:
 
     Jeżeli aplikacja jest napisana tak, że przy *każdym* bezpośrednim odwołaniu sprawdza, czy użytkownik wykonujący zapytanie ma do danego zasobu prawo dostępu, to jest odporna na *Insecure Direct Object Reference*. Niestety w aplikacjach bogatych w różnorakie sposoby dostępu do danych trudno jest upewnić się, że żadne bezpośrednie odwołanie nie zostało pominięte. 
 
-### Jak Sealious zapobiega podatności na *Insecure Direct Object Reference*
+### Jak Sealious zapobiega *Insecure Direct Object Reference*
 
-Struktura Sealiousa została zaprojektowana z myślą o zapobieganiu podatności aplikacji na ataki typu *Insecure Direct Object Reference*. Dzięki temu nasz framework posiada następujące cechy:
+Rozważając sposoby, w jakie Sealious może zapobiegać *Insecure Direct Object Reference* zdecydowaliśmy się wdrożyć podejście #2 z powyższej listy: *"Sprawdzanie praw dostępu przy **każdym** bezpośrednim odwołaniu do zasobu"*, co zaowocowało wzbogaceniem Sealiousa o następujące cechy:
 
-1. aplikacja pisana przy pomocy Sealiousa musi zawierać deklaratywny opis jej struktury i uprawnień użytkowników. Opis ten musi jednoznacznie stwierdzać, jacy użytkownicy i w jakich okolicznościach mogą wykonywać określone metody na konkretnym zasobie. Rozpatrzmy przykład opisu aplikacji Sealiousowej:
+1. aplikacja pisana przy pomocy Sealiousa musi zawierać deklaratywny opis jej struktury i uprawnień użytkowników. Opis ten musi jednoznacznie stwierdzać, jacy użytkownicy i w jakich okolicznościach mogą wykonywać określone metody na konkretnym zasobie. Rozpatrzmy przykład opisu aplikacji sealiousowej:
 
     ```javascript
      1 new Sealious.ResourceType({
@@ -417,7 +421,7 @@ Struktura Sealiousa została zaprojektowana z myślą o zapobieganiu podatności
     12 })
     ```
 
-    Powyższy przykład kodu stanowi opis^[proszę zwrócić uwagę, że poza  koniecznymi wywołaniami `Sealious.init` i `Sealious.start` opis ten stanowi całość kodu potrzebnego do jej uruchomienia i poprawnego działania] prostej aplikacji Sealiousowej, w której:
+    Powyższy przykład kodu stanowi opis^[proszę zwrócić uwagę, że poza  koniecznymi wywołaniami `Sealious.init` i `Sealious.start` opis ten stanowi całość kodu potrzebnego do jej uruchomienia i poprawnego działania] prostej aplikacji sealiousowej, w której:
 
     * istnieje typ zasobu `post`, który ma pola `title` oraz `body` (linijki 4 i 5)
     * tylko zalogowany użytkownik może tworzyć zasoby typu `post` (linijka 9)
@@ -432,13 +436,13 @@ Struktura Sealiousa została zaprojektowana z myślą o zapobieganiu podatności
 
 3. **każda metoda służąca do odczytu lub modyfikacji zasobu w Sealiousie jest wrażliwa na kontekst, w którym została wykonana.**
 
-    Aplikacja Sealiousowa po otrzymaniu dowolnego zapytania od użytkownika generuje obiekt reprezentujący *kontekst* tego zapytania. Kontekst zawiera informacje o:
+    Aplikacja sealiousowa po otrzymaniu dowolnego zapytania od użytkownika generuje obiekt reprezentujący *kontekst* tego zapytania. Kontekst zawiera informacje o:
 
     * id użytkownika, który dokonał zapytania (`undefined`, jeżeli jest to użytkownik niezalogowany)
     * czasie otrzymania zapytania (w postaci liczby całkowitej - ilości milisekund od 1 stycznia 1970 GMT)
     * adresie IP, z którego przyszło zapytanie (tylko w kontekście aplikacji webowych^[przypominam, że Sealious może też być wykorzystany do tworzenia aplikacji desktopowych])
 
-    **Następnie obiekt ten jest podawany jako argument do każdej metody związanej z zarządzaniem zasobami, która jest wywołana w trakcie generowania odpowiedzi na zapytanie użytkownika.**
+    **Następnie obiekt ten jest podawany jako argument do *każdej* metody związanej z zarządzaniem zasobami, która jest wywołana w trakcie generowania odpowiedzi na zapytanie użytkownika.**
 
     Każda z wrażliwych na kontekst metod sprawdza, czy wykonywana przez nią operacja jest dozwolona w danym kontekście. W przypadku decyzji negatywnej rzuca błąd, w przypadku decyzji pozytywnej wykonuje się dalej i podaje dany jej obiekt reprezentujący kontekst do każdej wywoływanej przez nią wrażliwej na kontekst metody.
 
@@ -477,7 +481,7 @@ Struktura Sealiousa została zaprojektowana z myślą o zapobieganiu podatności
 
     Jak widać, metoda ta najpierw sprawdza, czy jest dozwolona w obecnym kontekście (`resource_type.check_if_action_is_allowed(context, "create")`), a następnie wielokrotnie podaje dalej dany jej kontekst do wywoływanych przez nią funkcji, (np. w `self.resource_type.validate_field_values(context, true, body)`).
 
-    Dzięki takiemu podejściu żaden użytkownik nie dostanie dostępu do zasobu, do którego nie ma uprawnień. Fakt, że jeden kontekst jest przekazywany wgłąb do każdego wywołania metody umożliwia tworzenie skomplikowanych relacji pomiędzy zasobami i dynamiczne generowanie adresów url do zagnieżdżonych zasobów bez troski o bezpieczeństwo danych. Rozpatrzmy to na przykładzie deklaratywnego opisu hipotetycznego serwisu społecznościowego:
+    Dzięki takiemu podejściu żaden użytkownik nie dostanie dostępu do zasobu, do którego nie ma uprawnień. Fakt, że jeden kontekst jest przekazywany wgłąb do każdego wywołania metody umożliwia tworzenie skomplikowanych relacji pomiędzy zasobami i dynamiczne generowanie adresów URL do zagnieżdżonych zasobów bez troski o bezpieczeństwo danych. Rozpatrzmy to na przykładzie deklaratywnego opisu hipotetycznego serwisu społecznościowego:
 
     ```javascript
     new Sealious.ResourceType({
@@ -500,16 +504,26 @@ Struktura Sealiousa została zaprojektowana z myślą o zapobieganiu podatności
         name: "owner_or_friends",
         item_sensitive: true,
         checker_function: function(context, item){
+            if (context.get("user_id") === item.created_context.user_id) {
+                return true;
+            }
             var are_friends = false;
             item.body.friends.forEach(function(friend){
-                
-            })
+                if (friend.id==item.id) {
+                    are_friends = true;
+                }
+            });
+            return are_friends;
         }
     })
     ```
 
-//missing function level Access Control
+    Aplikacja opisana w ten sposób zawiera m.in taką ścieżkę REST:
 
-// Steam
+    ```
+    /api/v1/person/friends/<idOsobyA>/friends/<idOsobyB>/friends/<idOsobyC>
+    ```
+
+    Dzięki opisanym powyżej cechom Sealiousa użytkownik wykonujący powyższe zapytanie dostanie informacje o osobie C tylko, jeśli osoba C oraz osoba B są w jego gronie znajomych.
 
 # Bibliografia
