@@ -1,6 +1,6 @@
 # Wstęp {-}
 
-Sealious (wym. */si\:liəs/*) jest *deklaratym*, *modułowym* frameworkiem do tworzenia aplikacji webowych i desktopowych przy użyciu języka JavaScript w środowisku Node.js. 
+Sealious (wym. */si\:liəs/*) jest *deklaratym*, *modułowym* frameworkiem do tworzenia aplikacji webowych i desktopowych przy użyciu języka JavaScript w środowisku Node.js. Jest opublikowany jako projekt Open Source, na licencji *BSD 2-Clause*.
 
 Sealious służy do tworzenia "backendu" aplikacji---nie jest narzędziem do projektowania interfejsów graficznych. Udostępnia interfejs *programistyczny* przyjazny deweloperom odpowiedzialnym za "frontend" aplikacji. 
 
@@ -24,7 +24,7 @@ Celem naszego projektu był rozwój Sealiousa. W trakcie prac nad nim:
 
 ### Przykład wdrożenia
 
-Przez ostatnie pół roku rozwój Sealiousa był mocno kierowany potrzebami projektu Placetag---również realizowanego jako projekt inżynierski na WMI UAM, pod opieką dr-a Jacka Marciniaka.
+Przez ostatnie pół roku rozwój Sealiousa był mocno kierowany potrzebami projektu Placetag---również realizowanego jako (osobny) projekt inżynierski na WMI UAM^[Tytuł projektu: “Placetag - aplikacja wspierająca organizację i katalogowanie miejsc”. Opiekun: dr Jacek Marciniak].
 
 Placetag to serwis internetowy stworzony za pomocą Sealiousa, pozwalający na zapisywanie miejsc na mapie oraz na łatwe wysyłanie odnośników do nich za pomocą sieci społecznościowych.
 
@@ -36,6 +36,6 @@ Dzięki zastosowaniu Sealiousa kod backendu tego serwisu ma małą objętość -
 
 ![Dwa interfejsy aplikacji Placetag - webowy i na platformę Android. Obydwa komunikują się z interfejsem programistycznym tworzonym przez Sealiousa.](./media/placetag.png)
 
-Projekt Placetag zakończył się sukcesem - w Internecie jest już dostępna jego publiczna, "produkcyjna" wersja. 
+Projekt Placetag zakończył się sukcesem - w Internecie jest już dostępna jego publiczna, "produkcyjna" wersja^[Publiczna wersja dostępna pod adresem http://placetag.pl]. 
 
 
