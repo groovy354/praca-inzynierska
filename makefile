@@ -3,9 +3,9 @@
 # If a need to change the font to Times arisises, add this line to the `wmi.sty` file:
 # \usepackage{times}
 
-filenames := 0-wstep.md 2-bezpieczenstwo.md
+filenames := 0-wstep.md 1-cel-i-zakres.md 2-nomenklatura.md 3-bezpieczenstwo.md
 result_filename := praca-inzynierska
-title := "Rozwój open-source’owego frameworka do tworzenia aplikacji - \"Sealious\""
+title := "Rozwój open-source’owego frameworka do tworzenia aplikacji - \"Sealious\" (cz. 2)"
 
 ifdef format
 else
@@ -24,7 +24,7 @@ $(result_filename).temp: concatenated.temp
 # export LC_ALL=pl_PL && 
 # export LANG=pl_PL.UTF-8 && 
 # export LANGUAGE=pl_PL && 
-$(result_filename).$(format): references.json concatenated.temp citation-style.xml wmi.sty
+$(result_filename).$(format): references.json concatenated.temp citation-style.xml wmi.sty makefile
 	pandoc concatenated.temp \
 		--csl=citation-style.xml \
 		-H wmi.sty \

