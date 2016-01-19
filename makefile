@@ -6,10 +6,13 @@
 filenames := 0-wstep.md 1-cel-i-zakres.md 2-nomenklatura.md 3-bezpieczenstwo.md
 result_filename := sealious-cz-2-jan-orlik
 title := "Rozwój open-source’owego frameworka do tworzenia aplikacji - \"Sealious\"\ (cz.\ 2)"
-author := "Jan Orlik"
+title_eng := "Extending capabilities of Sealious - an open-source application-development framework (part 2)"
 year := "2015"
 promotor := "prof. Marek Nawrocki"
+type := "Praca inżynierska"
+author := "Jan Orlik"
 # author_is_female := true
+author_numer_albumu := "384018"
 
 ifdef format
 else
@@ -47,10 +50,13 @@ $(result_filename).$(format): references.json concatenated.temp citation-style.x
 		-V lang=pl-PL \
 		--metadata lang=pl-PL \
 		-V title=$(title) \
+		-V title_eng=$(title_eng) \
 		-V author=$(author) \
 		-V year=$(year) \
 		-V promotor=$(promotor) \
 		-V author_is_female=$(author_is_female) \
+		-V author_numer_albumu=$(author_numer_albumu) \
+		-V type=$(type) \
 		-o $(result_filename).$(format) && \
 	xdg-open $(result_filename).$(format)
 
