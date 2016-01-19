@@ -4,8 +4,12 @@
 # \usepackage{times}
 
 filenames := 0-wstep.md 1-cel-i-zakres.md 2-nomenklatura.md 3-bezpieczenstwo.md
-result_filename := praca-inzynierska
-title := "Rozwój open-source’owego frameworka do tworzenia aplikacji - \"Sealious\" (cz. 2)"
+result_filename := sealious-cz-2-jan-orlik
+title := "Rozwój open-source’owego frameworka do tworzenia aplikacji - \"Sealious\"\ (cz.\ 2)"
+author := "Jan Orlik"
+year := "2015"
+promotor := "prof. Marek Nawrocki"
+# author_is_female := true
 
 ifdef format
 else
@@ -24,7 +28,7 @@ $(result_filename).temp: concatenated.temp
 # export LC_ALL=pl_PL && 
 # export LANG=pl_PL.UTF-8 && 
 # export LANGUAGE=pl_PL && 
-$(result_filename).$(format): references.json concatenated.temp citation-style.xml wmi.sty makefile
+$(result_filename).$(format): references.json concatenated.temp citation-style.xml wmi.sty makefile template_wmi/template.latex
 	pandoc concatenated.temp \
 		--csl=citation-style.xml \
 		-H wmi.sty \
@@ -33,6 +37,7 @@ $(result_filename).$(format): references.json concatenated.temp citation-style.x
 		--standalone \
 		--smart \
 		--toc-depth=2 \
+		--template=template_wmi/template \
 		-V documentclass=report \
 		-f markdown+footnotes+backtick_code_blocks+inline_notes+raw_html \
 		--toc \
@@ -42,6 +47,10 @@ $(result_filename).$(format): references.json concatenated.temp citation-style.x
 		-V lang=pl-PL \
 		--metadata lang=pl-PL \
 		-V title=$(title) \
+		-V author=$(author) \
+		-V year=$(year) \
+		-V promotor=$(promotor) \
+		-V author_is_female=$(author_is_female) \
 		-o $(result_filename).$(format) && \
 	xdg-open $(result_filename).$(format)
 

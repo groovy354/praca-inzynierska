@@ -1,6 +1,6 @@
 # Opis całości projektu {-}
 
-Sealious (wym. */si\:liəs/*) jest *deklaratym*, *modułowym* frameworkiem do tworzenia aplikacji webowych i desktopowych przy użyciu języka JavaScript w środowisku Node.js. Jest opublikowany jako projekt Open Source, na licencji *BSD 2-Clause*.
+Sealious (wym. */si\:liəs/*) jest *deklaratywnym*, *modułowym* frameworkiem do tworzenia aplikacji webowych i desktopowych przy użyciu języka JavaScript w środowisku Node.js. Jest opublikowany jako projekt Open Source, na licencji *BSD 2-Clause*.
 
 Sealious służy do tworzenia "backendu" aplikacji---nie jest narzędziem do projektowania interfejsów graficznych. Udostępnia interfejs *programistyczny* przyjazny deweloperom odpowiedzialnym za "frontend" aplikacji. 
 
