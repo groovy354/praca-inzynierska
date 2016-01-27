@@ -1,4 +1,4 @@
-\documentclass[$if(fontsize)$$fontsize$,$endif$$if(lang)$$babel-lang$,$endif$$if(papersize)$$papersize$paper,$endif$$for(classoption)$$classoption$$sep$,$endfor$,twoside]{$documentclass$}
+\documentclass[$if(fontsize)$$fontsize$,$endif$$if(lang)$$babel-lang$,$endif$$if(papersize)$$papersize$paper,$endif$$for(classoption)$$classoption$$sep$,$endfor$,twoside,openright]{$documentclass$}
 $if(fontfamily)$
 \usepackage[$for(fontfamilyoptions)$$fontfamilyoptions$$sep$,$endfor$]{$fontfamily$}
 $else$
@@ -11,6 +11,14 @@ $endif$
 \usepackage{amssymb,amsmath}
 \usepackage{ifxetex,ifluatex}
 \usepackage{fixltx2e} % provides \textsubscript
+
+\usepackage{afterpage}
+
+\newcommand\blankpage{%
+    \null
+    \thispagestyle{empty}%
+    \newpage}
+
 \ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
   \usepackage[$if(fontenc)$$fontenc$$else$T1$endif$]{fontenc}
   \usepackage[utf8]{inputenc}
@@ -237,10 +245,11 @@ $endfor$
  \begin{center}
      \rm Poznań, $year$
  \end{center}
+
+ \afterpage{\blankpage}
  \newpage
 
  \thispagestyle{empty}
-
 \begin{flushright}
 Poznań, dnia .................
 \end{flushright}
@@ -276,6 +285,9 @@ NIE w przypadku braku zgody. Niewypełnienie pola oznacza brak zgody na udostęp
 ......................................................
 \end{flushright}
 
+\newpage
+\thispagestyle{empty}
+\mbox{}
 
 $if(abstract)$
 \begin{abstract}
