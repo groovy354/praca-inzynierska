@@ -326,7 +326,7 @@ aby każdy z użytkowników, któremu wyświetli się post atakującego został 
 
 ## Jak Sealious zapobiega XSS
 
-Domyślnie zainstalowany w Sealiousie typ pola `text` korzysta z modułu `sanitize-html` aby usuwać z inputu użytkownika potencjalnie złośliwe skrypty^[poniższy fragment kodu pochodzi z pliku `lib/base-chips/field-type.text.js` z repozytorium sealious/sealious]: 
+Domyślnie zainstalowany w Sealiousie typ pola `text` korzysta z modułu `sanitize-html` aby usuwać z danych wprowadzanych przez użytkownika potencjalnie złośliwe skrypty^[poniższy fragment kodu pochodzi z pliku `lib/base-chips/field-type.text.js` z repozytorium sealious/sealious]: 
 
 ```javascript
 var field_type_text = new Sealious.FieldType({
@@ -353,7 +353,7 @@ var field_type_text = new Sealious.FieldType({
 });
 ```
 
-Dzięki temu opisany powyżej input złośliwego użytkownika zostałby w aplikacji sealiousowej przed zapisaniem do bazy danych zamieniony na:
+Dzięki temu opisany powyżej tekst wprowadzony przez złośliwego użytkownika zostałby w aplikacji sealiousowej przed zapisaniem do bazy danych zamieniony na:
 
 ```
 Jestem złośliwym użytkownikiem
@@ -372,7 +372,7 @@ Automatyczne testy nie mogą łatwo wykryć podatności tego typu, gdy aplikacja
 
 Podatność na *Insecure Direct Object Reference* nie jest bardzo "medialna"^[14 tyś. wyników w Google Search dla zapytania "insecure direct object reference" vs 1,14 *mln*  dla zapytania "sql injection"], ale potrafi być dotkliwa w skutkach i mieć miejsce nawet w popularnych, dużych aplikacjach:
 
-* **Citigroup**---atakujący korzystając z brute-force na adresach z *Insecure Direct Object Reference* wykradli dane 200 tysięcy klientów banku Citi [@citi_idor]
+* **Citigroup**---atakujący korzystając z algorytmu siłowego na adresach z *Insecure Direct Object Reference* wykradli dane 200 tysięcy klientów banku Citi [@citi_idor]
 * **Facebook**---z powodu podatności na *Insecure Direct Object Reference* atakujący mógł usunąć wszystkie notatki z konta dowolnego użytkownika tego serwisu [@facebook_idor].
 * **Twitter**---szczęśliwie w porę wykryta podatność na opisywany w tej sekcji atak umożliwiała atakującemu usunięcie danych kart płatniczych *wszystkich* reklamodawców Twittera [@twitter_idor]
 
@@ -444,7 +444,7 @@ Rozważając sposoby, w jakie Sealious może zapobiegać *Insecure Direct Object
 
 2. Identyfikatory zasobów w Sealiousie nie są przewidywalne.
     
-    Sealious, zgodnie z rekomendacją *Internet Engineering Task Force* [@uuid_rfc] używa UUID zamiast liczb całkowitych do jednoznacznej identyfikacji zasobu. Uniemożliwia to przewidzenie identyfikatorów istniejących zasobów
+    Sealious, zgodnie z rekomendacją *Internet Engineering Task Force* [@uuid_rfc] używa UUID (*Universally Unique Identifier*) zamiast liczb całkowitych do jednoznacznej identyfikacji zasobu. Uniemożliwia to przewidzenie identyfikatorów istniejących zasobów
 
 3. **Każda metoda służąca do odczytu lub modyfikacji zasobu w Sealiousie jest wrażliwa na kontekst, w którym została wykonana.**
 
@@ -458,7 +458,7 @@ Rozważając sposoby, w jakie Sealious może zapobiegać *Insecure Direct Object
 
     Każda z wrażliwych na kontekst metod sprawdza, czy wykonywana przez nią operacja jest dozwolona w danym kontekście. W przypadku decyzji negatywnej rzuca błąd, w przypadku decyzji pozytywnej wykonuje się dalej i podaje dany jej obiekt reprezentujący kontekst do każdej wywoływanej przez nią wrażliwej na kontekst metody.
 
-    Przykładem metody wrażliwej na kontekst jest metoda `create_resource` należąca do subjectu `ResourceTypeCollection`:
+    Przykładem metody wrażliwej na kontekst jest metoda `create_resource` należąca do prototypu obiektu `ResourceTypeCollection`:
 
     ```javascript
     ResourceTypeCollection.prototype.create_resource = 

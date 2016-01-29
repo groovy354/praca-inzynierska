@@ -19,7 +19,7 @@ Jak zobaczymy w następnych rozdziałach, deklaratywność Sealiousa umożliwia 
 Celem naszego projektu był rozwój Sealiousa. W trakcie prac nad nim:
 
 * zidentyfikowaliśmy i naprawiliśmy 50 problemów z kodem (brakujące funkcjonalności, bugi, niespójności w dokumentacji)
-* zwiększyliśmy objętość kodu o ok. 30%^[Może się wydawać, że 30% to nie jest dużo, ale jesteśmy dumni z faktu, że uzyskaliśmy tak duży postęp bez drastycznego zwiększania objętości kodu. Bardzo często okazywało się, że po naprawieniu buga albo dodaniu nowej funkcjonalności do Sealiousa kodu w repozytorium ubywało, ponieważ przepisaliśmy kod tak, aby rozwiązywał bardziej ogólny problem---który często bywa prostszy niż kilka konkretnych.]
+* zwiększyliśmy objętość kodu o ok. 30% (względem stanu z dnia początku prac nad projektem)^[Może się wydawać, że 30% to nie jest dużo, ale jesteśmy dumni z faktu, że uzyskaliśmy tak duży postęp bez drastycznego zwiększania objętości kodu. Bardzo często okazywało się, że po naprawieniu buga albo dodaniu nowej funkcjonalności do Sealiousa kodu w repozytorium ubywało, ponieważ przepisaliśmy kod tak, aby rozwiązywał bardziej ogólny problem---który często bywa prostszy niż kilka konkretnych.]
 * dokończyliśmy prace nad wersją `0.6` (została ona doprowadzona do stanu `stable`) oraz równolegle rozwijaliśmy nową wersję, `0.7` (aktualnie w stanie `alpha`), bogatą w nowe funkcje i rozwiązania. 
 
 ### Przykład wdrożenia

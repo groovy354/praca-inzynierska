@@ -1,6 +1,6 @@
-# Nomenklatura frameworka Sealious {-}
+# Terminologia frameworka Sealious {-}
 
-Struktura Sealiousa nie była bezpośrednio inspirowana żadnym dotychczas istniejącym frameworkiem, przez co nazwy niektórych struktur w nim się znajdujących posiadają oryginalne, określone przez nas nazwy. Ich znaczenia i wzajemne relacje są dokładniej wytłumaczone w pracy opisującej część pierwszą naszego tematu^[Praca inżynierska Poli Mikołajczak, pt. *Rozwój open-source’owego frameworka do tworzenia aplikacji - ”Sealious” (cz. 1)*. Realizowana na WMI UAM pod opieką prof. Marka Nawrockiego], ale dla wygody Czytelnika po krótce opiszę najważniejsze z nich:
+Struktura Sealiousa nie była bezpośrednio inspirowana żadnym dotychczas istniejącym frameworkiem, przez co niektóre struktur w nim się znajdujące posiadają oryginalne, określone przez nas nazwy. Ich znaczenia i wzajemne relacje są dokładniej wytłumaczone w pracy opisującej część pierwszą naszego tematu^[Praca inżynierska Poli Mikołajczak, pt. *Rozwój open-source’owego frameworka do tworzenia aplikacji - ”Sealious” (cz. 1)*. Realizowana na WMI UAM pod opieką prof. Marka Nawrockiego], ale dla wygody Czytelnika po krótce opiszę najważniejsze z nich:
 
 * *chip* - zbiór funkcjonalności realizujący określone zadanie w aplikacji tworzonej za pomocą Sealiousa. 
 * *deklaratywny opis aplikacji* - zbiór deklaracji funkcjonalności aplikacji napisany wg. określonych schematów. Nie zawiera *imperatywnych* instrukcji---tylko informacje o tym, *co* aplikacja ma robić, ale nie *jak*.
