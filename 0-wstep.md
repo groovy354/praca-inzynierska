@@ -4,6 +4,8 @@ Sealious (wym. */si\:liəs/*) jest *deklaratywnym*, *modułowym* frameworkiem do
 
 Sealious służy do tworzenia "backendu" aplikacji---nie jest narzędziem do projektowania interfejsów graficznych. Udostępnia interfejs *programistyczny* przyjazny deweloperom odpowiedzialnym za "frontend" aplikacji. 
 
+Prace nad Sealiousem zaczęły się w październiku 2014, w ramach projektu na przedmiot Technologie Aplikacji Serwerowych^[Skład zespołu: Jan Orlik, Adrian Wydmański, Pola Mikołajczak, Mariusz Wójcik]. Po otrzymaniu zaliczenia z przedmiotu zdecydowaliśmy się kontynuować prace nad tym frameworkiem w ramach projektu inżynierskiego. 
+
 ### Deklaratywność
 
 "Deklaratywność" oznacza, że deweloper tworzący aplikację przy użyciu Sealiousa musi tylko opisać *co* ma owa aplikacja robić, a nie *jak*. Deklaratywny opis aplikacji sealiousowej^[dla zwięzłości będziemy używać sformułowania "aplikacja sealiousowa", mając na myśli "aplikacja napisana przy użyciu frameworka Sealious"] jest czytelny i jednoznaczny dla człowieka i dla maszyny.
