@@ -31,6 +31,7 @@ $(result_filename).temp: concatenated.temp
 # export LC_ALL=pl_PL && 
 # export LANG=pl_PL.UTF-8 && 
 # export LANGUAGE=pl_PL && 
+# --highlight-style monochrome \
 $(result_filename).$(format): references.json concatenated.temp citation-style.xml wmi.sty makefile template_wmi/template.latex
 	pandoc concatenated.temp \
 		--csl=citation-style.xml \
