@@ -3,8 +3,6 @@
 # If a need to change the font to Times arisises, add this line to the `wmi.sty` file:
 # \usepackage{times}
 
-filenames := 0-wstep.md 1-cel-i-zakres.md 2-nomenklatura.md 3-bezpieczenstwo.md
-result_filename := sealious-cz-2-jan-orlik
 title := "Rozwój open-source’owego frameworka do tworzenia aplikacji - \"Sealious\"\ (cz.\ 2)"
 title_eng := "Extending capabilities of Sealious - an open-source application-development framework (part 2)"
 year := "2016"
@@ -19,21 +17,38 @@ else
 	format=pdf
 endif
 
+ifdef filenames
+else
+	filenames := 0-wstep.md 1-cel-i-zakres.md 2-nomenklatura.md 3-bezpieczenstwo.md
+endif
+
+ifdef result_filename
+else
+	result_filename := sealious-cz-2-jan-orlik
+endif
+
+ifdef paper_mode
+	result_filename := $(result_filename).paper
+	code_color_scheme := monochrome
+	paper_mode_var := true
+else
+	result_filename := $(result_filename).digital
+	code_color_scheme := pygments
+	paper_mode_var := ""
+endif
+
+
 all: $(result_filename).$(format)
 	make $(result_filename).$(format)
-
-concatenated.temp: $(filenames)
-	cat $(filenames) > concatenated.temp
-
-$(result_filename).temp: concatenated.temp
-	./twarde-spacje.sh concatenated.temp $(result_filename).temp
 
 # export LC_ALL=pl_PL && 
 # export LANG=pl_PL.UTF-8 && 
 # export LANGUAGE=pl_PL && 
-# --highlight-style monochrome \
-$(result_filename).$(format): references.json concatenated.temp citation-style.xml wmi.sty makefile template_wmi/template.latex
-	pandoc concatenated.temp \
+
+$(result_filename).$(format): references.json citation-style.xml wmi.sty makefile template_wmi/template.latex $(filenames)
+	cat $(filenames) > concatenated.temp
+	./twarde-spacje.sh concatenated.temp $(result_filename).temp	
+	pandoc $(result_filename).temp \
 		--csl=citation-style.xml \
 		-H wmi.sty \
 		-V geometry:"inner=3cm, outer=2cm, top=2.5cm, bottom=2.5cm" \
@@ -41,7 +56,7 @@ $(result_filename).$(format): references.json concatenated.temp citation-style.x
 		--standalone \
 		--smart \
 		--toc-depth=2 \
-		--template=template_wmi/template \
+		--template=template_wmi/template.latex \
 		-V documentclass=report \
 		-f markdown+footnotes+backtick_code_blocks+inline_notes+raw_html \
 		--toc \
@@ -56,6 +71,8 @@ $(result_filename).$(format): references.json concatenated.temp citation-style.x
 		-V year=$(year) \
 		-V promotor=$(promotor) \
 		-V author_is_female=$(author_is_female) \
+		-V paper_mode=$(paper_mode_var) \
+		--highlight-style $(code_color_scheme) \
 		-V author_numer_albumu=$(author_numer_albumu) \
 		-V type=$(type) \
 		-o $(result_filename).$(format) && \
