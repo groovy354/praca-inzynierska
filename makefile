@@ -19,7 +19,7 @@ endif
 
 ifdef filenames
 else
-	filenames := 0-wstep.md 1-cel-i-zakres.md 2-nomenklatura.md 3-bezpieczenstwo.md
+	filenames := 0-abstrakt.md 1-wstep.md 2-cel-i-zakres.md 3-nomenklatura.md 4-bezpieczenstwo.md
 endif
 
 ifdef result_filename
